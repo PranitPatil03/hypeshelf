@@ -28,7 +28,7 @@ export default function SignInPage() {
 
             if (result.status === 'complete') {
                 await setActive({ session: result.createdSessionId });
-                router.push('/my-recommendations');
+                router.push('/my-recs');
             } else {
                 toast.error('Additional verification required.');
             }
