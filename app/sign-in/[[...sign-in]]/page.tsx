@@ -28,7 +28,7 @@ export default function SignInPage() {
 
             if (result.status === 'complete') {
                 await setActive({ session: result.createdSessionId });
-                router.push('/dashboard');
+                router.push('/my-recommendations');
             } else {
                 toast.error('Additional verification required.');
             }
@@ -53,7 +53,7 @@ export default function SignInPage() {
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
                 {/* Logo */}
                 <Link href="/" className="inline-block mb-2">
-                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">Hypeshelf</span>
+                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                 </Link>
 
                 <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
