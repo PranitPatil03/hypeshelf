@@ -15,8 +15,8 @@ export default function Header() {
             transition={{ duration: 0.3, ease: 'easeInOut' }}
         >
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 container max-w-7xl mx-auto w-full">
-                <Link href="/" aria-label="Hypeshelf Home" className="flex items-center gap-3">
-                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">Hypeshelf</span>
+                <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-3">
+                    <span className="text-2xl font-bold text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                 </Link>
 
                 <div className="flex items-center gap-4">
@@ -36,10 +36,10 @@ export default function Header() {
                     </SignedOut>
                     <SignedIn>
                         <Link
-                            href="/dashboard"
+                            href="/my-recommendations"
                             className={cn(buttonVariants({ variant: 'ghost', size: 'sm' }), "font-medium text-slate-800 hover:bg-slate-900/10 hover:text-slate-900")}
                         >
-                            Dashboard
+                            My Recommendations
                         </Link>
                         <UserButton />
                     </SignedIn>

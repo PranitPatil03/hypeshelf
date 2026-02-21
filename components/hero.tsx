@@ -19,7 +19,7 @@ const getTransition = (delay: number) => ({
 const HeroContent = () => (
     <div className='flex flex-col items-center text-center max-w-3xl'>
         <motion.h2
-            className='text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05] mb-4 sm:mb-6 font-lora font-medium text-slate-900 drop-shadow-sm'
+            className='text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05] mb-4 sm:mb-6 font-medium text-slate-900 drop-shadow-sm'
             {...fadeInUpVariant}
             transition={getTransition(0.2)}
         >
@@ -31,7 +31,7 @@ const HeroContent = () => (
             {...fadeInUpVariant}
             transition={getTransition(0.3)}
         >
-            Collect and share the stuff you're hyped about.
+            Collect and share the movies you're hyped about.
             Drop your favorites and discover what others love.
         </motion.p>
     </div>
