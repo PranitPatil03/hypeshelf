@@ -3,8 +3,9 @@ import Header from '@/components/header';
 import Hero from '@/components/hero';
 import Link from 'next/link';
 import { DUMMY_RECOMMENDATIONS } from '@/lib/dummy-data';
-import RecommendationCard from '@/components/recommendation-card';
+import RecCard from '@/components/rec-card';
 import { SignedOut } from '@clerk/nextjs';
+import FilterBar from '@/components/filter-bar';
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ genre?: string }> }) {
   const resolvedParams = await searchParams;
@@ -26,7 +27,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
           />
         </div>
 
-        <Header />
+        <Header transparentOnTop={true} />
 
         <main className="relative z-10 flex-1 flex flex-col justify-end items-center">
           <Hero />
@@ -37,7 +38,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center justify-center text-center mb-8 gap-4">
             <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Latest from the Shelf</h2>
-            <p className="text-base text-slate-500 max-w-xl">Discover what the community has been loving recently. Check out these popular movie recommendations.</p>
+            <p className="text-base text-slate-500 max-w-xl">Discover what the community has been loving recently. Check out these popular movie recs.</p>
 
             <SignedOut>
               <Link
@@ -49,33 +50,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
             </SignedOut>
           </div>
 
-          <div className="flex items-center justify-start sm:justify-center gap-2 mb-12 overflow-x-auto pb-2 scrollbar-hide">
-            <Link
-              href="/"
-              scroll={false}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium shadow-sm whitespace-nowrap border transition-colors ${activeGenre === 'All' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
-            >
-              All Movies
-            </Link>
-            {['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Horror', 'Thriller', 'Romance', 'Documentary'].map((genre) => (
-              <Link
-                key={genre}
-                href={`/?genre=${genre}`}
-                scroll={false}
-                className={`px-4 py-1.5 rounded-full text-sm font-medium shadow-sm whitespace-nowrap border transition-colors ${activeGenre === genre ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'}`}
-              >
-                {genre}
-              </Link>
-            ))}
-          </div>
+          <FilterBar
+            activeGenre={activeGenre}
+            basePath="/"
+            className="justify-start sm:justify-center mb-12"
+          />
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredRecs.map((rec) => (
-              <RecommendationCard key={rec.id} rec={rec} />
+              <RecCard key={rec.id} rec={rec} />
             ))}
             {filteredRecs.length === 0 && (
               <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 border-dashed">
-                No recommendations found for this genre.
+                No recs found for this genre.
               </div>
             )}
           </div>

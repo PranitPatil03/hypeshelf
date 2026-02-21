@@ -1,7 +1,7 @@
 import { Recommendation } from '@/lib/dummy-data';
 import { Settings, Clapperboard } from 'lucide-react';
 
-export default function RecommendationCard({ rec }: { rec: Recommendation }) {
+export default function RecCard({ rec }: { rec: Recommendation }) {
     return (
         <div className="flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm p-4 h-full">
             <div className="mb-4 text-slate-400">
@@ -25,7 +25,7 @@ export default function RecommendationCard({ rec }: { rec: Recommendation }) {
                 )}
             </div>
 
-            <p className="text-[13px] text-slate-600 leading-relaxed mb-5 flex-1 break-words">
+            <p className="text-[13px] text-slate-600 leading-relaxed mb-5 flex-1 wrap-break-word">
                 {rec.blurb}
             </p>
 
