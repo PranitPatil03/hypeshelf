@@ -2,18 +2,22 @@ import Image from 'next/image';
 import Header from '@/components/header';
 import Hero from '@/components/hero';
 import Link from 'next/link';
-import { DUMMY_RECOMMENDATIONS } from '@/lib/dummy-data';
-import RecCard from '@/components/rec-card';
 import { SignedOut } from '@clerk/nextjs';
 import FilterBar from '@/components/filter-bar';
+import RecGrid from '@/components/rec-grid';
+
+import { currentUser } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ genre?: string }> }) {
+  const user = await currentUser();
+  if (user) {
+    redirect('/shelf');
+  }
+
   const resolvedParams = await searchParams;
   const activeGenre = resolvedParams.genre || 'All';
 
-  const filteredRecs = activeGenre === 'All'
-    ? DUMMY_RECOMMENDATIONS
-    : DUMMY_RECOMMENDATIONS.filter(rec => rec.genre === activeGenre);
   return (
     <div className="relative font-sans">
       <div className="relative min-h-screen flex flex-col overflow-hidden">
@@ -36,36 +40,20 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
 
       <section className="relative z-10 w-full bg-white py-24">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex flex-col items-center justify-center text-center mb-8 gap-4">
-            <h2 className="text-3xl font-bold text-slate-900 tracking-tight">Latest from the Shelf</h2>
-            <p className="text-base text-slate-500 max-w-xl">Discover what the community has been loving recently. Check out these popular movie recs.</p>
-
-            <SignedOut>
-              <Link
-                href="/sign-up"
-                className="inline-flex h-10 items-center justify-center rounded-lg bg-[#0F172A] px-6 text-sm font-medium text-white shadow-[0_1px_2px_rgba(0,0,0,0.12),inset_0_1px_0_rgba(255,255,255,0.1)] border border-slate-800 transition-colors hover:bg-slate-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 disabled:pointer-events-none disabled:opacity-50 mt-2"
-              >
-                Sign in to add yours
-              </Link>
-            </SignedOut>
+          <div className="flex flex-col items-center justify-center text-center mb-4 gap-4">
+            <h2 className="text-5xl font-medium text-slate-900 tracking-tight">Latest from the Shelf</h2>
+            <p className="text-base text-slate-700 max-w-xl">Discover what the community has been loving recently. <br /> Check out these popular movie recs.</p>
           </div>
 
-          <FilterBar
-            activeGenre={activeGenre}
-            basePath="/"
-            className="justify-start sm:justify-center mb-12"
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredRecs.map((rec) => (
-              <RecCard key={rec.id} rec={rec} />
-            ))}
-            {filteredRecs.length === 0 && (
-              <div className="col-span-full py-12 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 border-dashed">
-                No recs found for this genre.
-              </div>
-            )}
+          <div className="sticky top-[68px] z-40 bg-white py-4 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 border-l-white! border-r-white!">
+            <FilterBar
+              activeGenre={activeGenre}
+              basePath="/"
+              className="justify-start sm:justify-center"
+            />
           </div>
+
+          <RecGrid genre={activeGenre} mode="landing" />
         </div>
       </section>
     </div>
