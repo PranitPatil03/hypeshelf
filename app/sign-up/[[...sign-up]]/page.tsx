@@ -5,7 +5,7 @@ import { useSignUp } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Loader } from 'lucide-react';
 
 export default function SignUpPage() {
     const { isLoaded, signUp, setActive } = useSignUp();
@@ -49,7 +49,7 @@ export default function SignUpPage() {
 
             if (completeSignUp.status === 'complete') {
                 await setActive({ session: completeSignUp.createdSessionId });
-                router.push('/my-recs');
+                router.push('/shelf');
             } else {
                 toast.error('Verification failed. Please try again.');
             }
@@ -65,7 +65,7 @@ export default function SignUpPage() {
         signUp.authenticateWithRedirect({
             strategy,
             redirectUrl: '/sso-callback',
-            redirectUrlComplete: '/dashboard',
+            redirectUrlComplete: '/shelf',
         });
     };
 
@@ -96,9 +96,9 @@ export default function SignUpPage() {
                         <button
                             type="submit"
                             disabled={isLoading || !isLoaded}
-                            className="cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
+                            className="flex items-center justify-center cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
                         >
-                            {isLoading ? 'Verifying...' : 'Verify Email'}
+                            {isLoading ? <><Loader className="w-5 h-5 mr-2 animate-spin" /> Verifying...</> : 'Verify Email'}
                         </button>
                     </form>
                 </div>
@@ -157,9 +157,9 @@ export default function SignUpPage() {
                     <button
                         type="submit"
                         disabled={isLoading || !isLoaded}
-                        className="cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
+                        className="flex items-center justify-center cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
                     >
-                        {isLoading ? 'Creating account...' : 'Sign up'}
+                        {isLoading ? <><Loader className="w-5 h-5 mr-2 animate-spin" /> Creating account...</> : 'Sign up'}
                     </button>
                 </form>
 
