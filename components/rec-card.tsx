@@ -143,7 +143,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="cursor-pointer pointer-events-auto w-full"
                 >
-                    <p className={`text-[13px] sm:text-[14px] font-normal text-white/90 leading-relaxed drop-shadow-sm transition-all duration-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                    <p className={`text-[13px] sm:text-[15px] font-semibold text-white/90 leading-relaxed drop-shadow-sm transition-all duration-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
                         {rec.blurb}
                     </p>
                 </div>

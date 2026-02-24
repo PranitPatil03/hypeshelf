@@ -21,7 +21,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
             <Link
                 href={basePath}
                 scroll={false}
-                className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap transition-colors ${activeGenre === 'All'
+                className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === 'All'
                     ? 'bg-slate-900 text-white'
                     : 'bg-white text-slate-600 hover:bg-slate-50'
                     }`}
@@ -32,7 +32,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                 <Link
                     href={`${basePath}?genre=My Recs`}
                     scroll={false}
-                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap transition-colors ${activeGenre === 'My Recs'
+                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === 'My Recs'
                         ? 'bg-slate-900 text-white'
                         : 'bg-white text-slate-600 hover:bg-slate-50'
                         }`}
@@ -44,7 +44,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                 <Link
                     href={`${basePath}?genre=Staff Picks`}
                     scroll={false}
-                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap transition-colors ${activeGenre === 'Staff Picks'
+                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === 'Staff Picks'
                         ? 'bg-slate-900 text-white'
                         : 'bg-white text-slate-600 hover:bg-slate-50'
                         }`}
@@ -57,7 +57,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                     key={genre}
                     href={`${basePath}?genre=${genre}`}
                     scroll={false}
-                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap transition-colors ${activeGenre === genre
+                    className={`px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === genre
                         ? 'bg-slate-900 text-white'
                         : 'bg-white text-slate-600 hover:bg-slate-50'
                         }`}
