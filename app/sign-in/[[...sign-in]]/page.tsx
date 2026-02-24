@@ -51,17 +51,19 @@ export default function SignInPage() {
     return (
         <div className="flex min-h-screen bg-white font-sans items-center justify-center">
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
-                {/* Logo */}
-                <Link href="/" className="inline-block mb-2">
-                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
-                </Link>
+                <div className="flex flex-col items-center text-center">
+                    {/* Logo */}
+                    <Link href="/" className="inline-block mb-2">
+                        <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                    </Link>
 
-                <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
-                    Login to your account
-                </h1>
-                <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                    Sign in to access your meticulously organized shelf and communities.
-                </p>
+                    <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
+                        Login to your account
+                    </h1>
+                    <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-sm">
+                        Sign in to access your meticulously organized shelf.
+                    </p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

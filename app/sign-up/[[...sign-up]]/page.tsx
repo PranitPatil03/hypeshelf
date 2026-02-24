@@ -73,12 +73,14 @@ export default function SignUpPage() {
         return (
             <div className="flex min-h-screen bg-white font-sans items-center justify-center">
                 <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
-                    <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
-                        Verify your email
-                    </h1>
-                    <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                        We've sent a verification code to <span className="font-semibold text-slate-800">{emailAddress}</span>.
-                    </p>
+                    <div className="flex flex-col items-center text-center">
+                        <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
+                            Verify your email
+                        </h1>
+                        <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-sm">
+                            We've sent a verification code to <span className="font-semibold text-slate-800">{emailAddress}</span>.
+                        </p>
+                    </div>
 
                     <form onSubmit={onPressVerify} className="space-y-4">
                         <div>
@@ -109,17 +111,19 @@ export default function SignUpPage() {
     return (
         <div className="flex min-h-screen bg-white font-sans items-center justify-center">
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
-                {/* Logo */}
-                <Link href="/" className="inline-block mb-2">
-                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
-                </Link>
+                <div className="flex flex-col items-center text-center">
+                    {/* Logo */}
+                    <Link href="/" className="inline-block mb-2">
+                        <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                    </Link>
 
-                <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
-                    Create an Account
-                </h1>
-                <p className="text-slate-500 text-sm mb-8 leading-relaxed">
-                    Sign up to access your meticulously organized shelf and communities.
-                </p>
+                    <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
+                        Create an Account
+                    </h1>
+                    <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-sm">
+                        Sign up to access your meticulously organized shelf.
+                    </p>
+                </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

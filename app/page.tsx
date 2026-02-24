@@ -44,15 +44,19 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
             <h2 className="text-5xl font-medium text-slate-900 tracking-tight">Latest from the Shelf</h2>
             <p className="text-base text-slate-700 max-w-xl">Discover what the community has been loving recently. <br /> Check out these popular movie recs.</p>
           </div>
+        </div>
 
-          <div className="sticky top-[68px] z-40 bg-white py-4 mb-8 -mx-4 px-4 sm:mx-0 sm:px-0 border-l-white! border-r-white!">
+        <div className="sticky top-[68px] z-40 bg-white py-4 mb-8 w-full border-b border-transparent">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
             <FilterBar
               activeGenre={activeGenre}
               basePath="/"
               className="justify-start sm:justify-center"
             />
           </div>
+        </div>
 
+        <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <RecGrid genre={activeGenre} mode="landing" />
         </div>
       </section>
