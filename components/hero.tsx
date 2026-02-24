@@ -21,7 +21,7 @@ const getTransition = (delay: number) => ({
 const HeroContent = () => (
     <div className='flex flex-col items-center text-center max-w-3xl'>
         <motion.h2
-            className='text-5xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05] mb-4 sm:mb-6 font-normal text-slate-900 drop-shadow-sm'
+            className='text-4xl md:text-6xl lg:text-7xl tracking-tight leading-[1.05] mb-4 sm:mb-6 font-light text-slate-900 drop-shadow-sm'
             {...fadeInUpVariant}
             transition={getTransition(0.2)}
         >
@@ -29,7 +29,7 @@ const HeroContent = () => (
             a better home.
         </motion.h2>
         <motion.p
-            className='text-slate-800 text-lg mb-5 leading-snug font-medium text-pretty max-w-xl drop-shadow-sm'
+            className='text-slate-800 text-sm md:text-lg mb-5 leading-snug font-medium text-pretty max-w-sm md:max-w-xl drop-shadow-sm'
             {...fadeInUpVariant}
             transition={getTransition(0.3)}
         >
@@ -53,7 +53,7 @@ const HeroContent = () => (
 );
 
 const Hero = () => (
-    <section className='w-full px-4 sm:px-6 flex justify-center items-end pb-12 pt-40'>
+    <section className='w-full px-4 sm:px-6 flex justify-center items-end pb-18 pt-56 md:pt-40 md:pb-8'>
         <div className='flex flex-col items-center gap-6 sm:gap-10 w-full max-w-7xl mx-auto'>
             <HeroContent />
         </div>

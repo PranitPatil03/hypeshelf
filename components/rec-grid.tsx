@@ -5,12 +5,10 @@ import { useQuery, usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import RecCard from "@/components/rec-card";
 import { LayoutGrid, List, Loader } from "lucide-react";
-import FilterBar from "@/components/filter-bar";
+import FilterBar from "./filter-bar";
 
 export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landing' | 'shelf' }) {
 
-    // If we're on the landing page and not filtering, use getLatest
-    // Otherwise use getAll to get the whole list so we can filter.
     const isMyRecs = genre === 'My Recs';
     const isStaffPicks = genre === 'Staff Picks';
     const activeGenre = genre || 'All';
@@ -54,12 +52,7 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
 
     if (status === "LoadingFirstPage" || currentUser === undefined) {
         return (
-            <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : ''}`}>
-                {mode === 'shelf' && (
-                    <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 shrink-0 opacity-50 pointer-events-none">
-                        <FilterBar activeGenre={genre || 'All'} basePath="/shelf" className="flex-1 w-full" showMyRecs={true} />
-                    </div>
-                )}
+            <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : 'mt-4'}`}>
                 <div className={`${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar pb-24' : 'pb-24 w-full'}`}>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 w-full">
                         {[...Array(12)].map((_, i) => (
@@ -115,17 +108,7 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
     }
 
     return (
-        <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : ''}`}>
-            {mode === 'shelf' && (
-                <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-2 shrink-0">
-                    <FilterBar
-                        activeGenre={genre || 'All'}
-                        basePath="/shelf"
-                        className="flex-1 w-full"
-                        showMyRecs={true}
-                    />
-                </div>
-            )}
+        <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : 'mt-4'}`}>
 
             <div className={`${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar pb-24' : 'pb-24 w-full'}`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 w-full">
@@ -147,7 +130,6 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
                     })}
                 </div>
 
-                {/* Infinite Scroll trigger target */}
                 <div ref={loadMoreRef} className="w-full h-20 flex items-center justify-center col-span-full">
                     {status === "LoadingMore" && (
                         <Loader className="w-8 h-8 text-slate-900 animate-spin" />

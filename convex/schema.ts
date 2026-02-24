@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server";
 
 export default defineSchema({
     recommendations: defineTable({
@@ -13,7 +13,7 @@ export default defineSchema({
         hypeScore: v.number(),
         isStaffPick: v.boolean(),
         posterUrl: v.string(),
-    }).index("by_genre", ["genre"]).index("by_userId", ["userId"]),
+    }).index("by_genre", ["genre"]).index("by_userId", ["userId"]).index("by_staffPick", ["isStaffPick"]),
 
     users: defineTable({
         clerkId: v.string(),

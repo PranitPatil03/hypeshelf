@@ -28,7 +28,7 @@ export default function SignInPage() {
 
             if (result.status === 'complete') {
                 await setActive({ session: result.createdSessionId });
-                router.push('/shelf');
+                window.location.href = '/shelf';
             } else {
                 toast.error('Additional verification required.');
             }

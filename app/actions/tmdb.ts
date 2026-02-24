@@ -25,7 +25,6 @@ const genreMap: Record<number, string> = {
 export async function searchMovies(query: string) {
     if (!query) return [];
 
-    // We expect TMDB_API_KEY or TMDB_READ_ACCESS_TOKEN to be in the env
     const apiKey = process.env.TMDB_API_KEY;
 
     if (!apiKey) {
@@ -35,7 +34,6 @@ export async function searchMovies(query: string) {
 
     try {
         const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`, {
-            // Next.js fetch caching option, search could be cached if we want but mostly it's dynamic
             cache: 'no-store'
         });
 
@@ -49,7 +47,7 @@ export async function searchMovies(query: string) {
             id: movie.id,
             title: movie.title,
             release_date: movie.release_date,
-            poster_path: movie.poster_path, // Need to append https://image.tmdb.org/t/p/w500 on client
+            poster_path: movie.poster_path,
             genre: movie.genre_ids && movie.genre_ids.length > 0 ? genreMap[movie.genre_ids[0]] || "Other" : "Other"
         }));
     } catch (e) {

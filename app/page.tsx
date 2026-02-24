@@ -1,8 +1,6 @@
 import Image from 'next/image';
 import Header from '@/components/header';
 import Hero from '@/components/hero';
-import Link from 'next/link';
-import { SignedOut } from '@clerk/nextjs';
 import FilterBar from '@/components/filter-bar';
 import RecGrid from '@/components/rec-grid';
 
@@ -41,8 +39,8 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
       <section className="relative z-10 w-full bg-white py-24">
         <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex flex-col items-center justify-center text-center mb-4 gap-4">
-            <h2 className="text-5xl font-medium text-slate-900 tracking-tight">Latest from the Shelf</h2>
-            <p className="text-base text-slate-700 max-w-xl">Discover what the community has been loving recently. <br /> Check out these popular movie recs.</p>
+            <h2 className="md:text-5xl text-4xl font-medium text-slate-900 tracking-tight">Latest from the Shelf</h2>
+            <p className="text-base md:text-lg text-slate-700 max-w-xl">Discover what the community has been loving recently. <br className='hidden md:block' /> Check out these popular movie recs.</p>
           </div>
         </div>
 
