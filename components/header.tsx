@@ -1,10 +1,11 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { SignedIn, SignedOut, useUser, useClerk } from '@clerk/nextjs';
 import { buttonVariants } from '@/components/ui/button';
-import { LogOut, Settings, User, Loader } from 'lucide-react';
+import { LogOut, Settings, User, Loader, Menu, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
 import { AddRecModal } from './add-rec-modal';
@@ -91,15 +92,17 @@ function CustomProfileDropdown() {
 export default function Header({ transparentOnTop = false }: { transparentOnTop?: boolean }) {
     const [hasPassedHero, setHasPassedHero] = useState(false);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         if (!transparentOnTop) return;
 
         const handleScroll = () => {
-            setHasPassedHero(window.scrollY > window.innerHeight - 100);
+            const isMobile = window.innerWidth < 768;
+            const threshold = isMobile ? 220 : window.innerHeight - 100;
+            setHasPassedHero(window.scrollY > threshold);
         };
         window.addEventListener('scroll', handleScroll);
-        // check immediately
         handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [transparentOnTop]);
@@ -110,15 +113,56 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
         <header
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 py-2 transition-all duration-300",
-                isSolid ? "bg-white backdrop-blur-md" : "bg-transparent"
+                isSolid ? "bg-white" : "bg-transparent"
             )}
         >
             <div className="flex items-center justify-between px-4 sm:px-6 py-4 container max-w-7xl mx-auto w-full">
-                <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-3">
-                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
-                </Link>
+                {transparentOnTop ? (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
+                        animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                        transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
+                    >
+                        <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-3">
+                            <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                        </Link>
+                    </motion.div>
+                ) : (
+                    <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-3">
+                        <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                    </Link>
+                )}
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 md:hidden">
+                    <SignedOut>
+                        {isSolid && (
+                            <Link
+                                href="/sign-up"
+                                className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
+                            >
+                                + add your recs
+                            </Link>
+                        )}
+                        <button
+                            onClick={() => setIsMenuOpen(!isMenuOpen)}
+                            className="p-2 rounded-md text-slate-900 hover:bg-slate-200 cursor-pointer"
+                        >
+                            <Menu className="w-5 h-5" />
+                        </button>
+                    </SignedOut>
+
+                    <SignedIn>
+                        <button
+                            onClick={() => setIsAddModalOpen(true)}
+                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors cursor-pointer"
+                        >
+                            + add your recs
+                        </button>
+                        <CustomProfileDropdown />
+                    </SignedIn>
+                </div>
+
+                <div className="hidden md:flex items-center gap-4">
                     <SignedOut>
                         {isSolid && (
                             <Link
@@ -151,12 +195,74 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                         <CustomProfileDropdown />
                     </SignedIn>
                 </div>
+
             </div>
 
-            <AddRecModal
-                isOpen={isAddModalOpen}
-                onClose={() => setIsAddModalOpen(false)}
+            <div
+                className={cn(
+                    "fixed inset-0 bg-black/40 z-40 md:hidden transition-opacity duration-300",
+                    isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+                )}
+                onClick={() => setIsMenuOpen(false)}
             />
+            <div
+                className={cn(
+                    "fixed top-0 left-0 h-full w-72 bg-slate-50 z-50 md:hidden shadow-2xl transition-transform duration-300 ease-in-out flex flex-col",
+                    isMenuOpen ? "translate-x-0" : "-translate-x-full"
+                )}
+            >
+                <div className="flex items-center justify-between px-5 py-5 border-b border-slate-100">
+                    <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                    <button
+                        onClick={() => setIsMenuOpen(false)}
+                        className="p-1.5 rounded-md text-slate-500 hover:bg-slate-100 transition-colors cursor-pointer"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                <div className="flex flex-col gap-2 p-5 flex-1">
+                    <SignedOut>
+                        <Link
+                            href="/sign-up"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors underline underline-offset-4"
+                        >
+                            + add your recs
+                        </Link>
+                        <Link
+                            href="/sign-in"
+                            onClick={() => setIsMenuOpen(false)}
+                            className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors underline underline-offset-4"
+                        >
+                            login
+                        </Link>
+                        <Link
+                            href="/sign-up"
+                            onClick={() => setIsMenuOpen(false)}
+                            className={cn(
+                                buttonVariants({ size: 'sm' }),
+                                'justify-center rounded-full shadow-md mt-2'
+                            )}
+                        >
+                            Sign up
+                        </Link>
+                    </SignedOut>
+                    <SignedIn>
+                        <button
+                            onClick={() => { setIsAddModalOpen(true); setIsMenuOpen(false); }}
+                            className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors text-left cursor-pointer underline underline-offset-4"
+                        >
+                            + add your recs
+                        </button>
+                        <div className="px-4 py-3">
+                            <CustomProfileDropdown />
+                        </div>
+                    </SignedIn>
+                </div>
+            </div>
+
+            <AddRecModal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} />
         </header>
     );
 }

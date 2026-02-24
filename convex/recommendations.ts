@@ -2,15 +2,24 @@ import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
 
-export const getLatest = query({
-    args: {},
-    handler: async (ctx) => {
-        return await ctx.db
-            .query("recommendations")
-            .order("desc")
-            .take(6);
-    },
-});
+const ALLOWED_GENRES = [
+    "Action", "Comedy", "Drama", "Sci-Fi", "Horror", "Thriller", "Romance", "Documentary",
+    "Other", "Adventure", "Animation", "Crime", "Family", "Fantasy", "History",
+    "Music", "Mystery", "Science Fiction", "TV Movie", "War", "Western",
+];
+
+const MAX_TITLE_LENGTH = 200;
+const MAX_BLURB_LENGTH = 250;
+
+function isSafeUrl(url: string): boolean {
+    if (url === "") return true;
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+        return false;
+    }
+}
 
 export const getAll = query({
     args: {
@@ -33,7 +42,7 @@ export const getAll = query({
         } else if (args.staffPicks) {
             return await ctx.db
                 .query("recommendations")
-                .filter((q) => q.eq(q.field("isStaffPick"), true))
+                .withIndex("by_staffPick", (q) => q.eq("isStaffPick", true))
                 .order("desc")
                 .paginate(args.paginationOpts);
         } else if (args.genre && args.genre !== "All") {
@@ -62,6 +71,27 @@ export const create = mutation({
         if (!identity) {
             throw new Error("Must be logged in to create a recommendation");
         }
+        const title = args.title.trim();
+        const blurb = args.blurb.trim();
+
+        if (!title || title.length > MAX_TITLE_LENGTH) {
+            throw new Error(`Title must be between 1 and ${MAX_TITLE_LENGTH} characters`);
+        }
+        if (!blurb || blurb.length > MAX_BLURB_LENGTH) {
+            throw new Error(`Review must be between 1 and ${MAX_BLURB_LENGTH} characters`);
+        }
+        if (!ALLOWED_GENRES.includes(args.genre)) {
+            throw new Error(`Invalid genre: ${args.genre}`);
+        }
+        if (!isSafeUrl(args.link)) {
+            throw new Error("Link must be a valid http/https URL");
+        }
+        if (!isSafeUrl(args.posterUrl)) {
+            throw new Error("Poster URL must be a valid http/https URL");
+        }
+        if (args.hypeScore < 1 || args.hypeScore > 10) {
+            throw new Error("Hype score must be between 1 and 10");
+        }
 
         const user = await ctx.db
             .query("users")
@@ -69,20 +99,20 @@ export const create = mutation({
             .unique();
 
         if (!user) {
-            throw new Error("User not found in mapping");
+            throw new Error("User not found in database");
         }
 
         return await ctx.db.insert("recommendations", {
             userId: user.clerkId,
             userName: user.name,
             userAvatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`,
-            title: args.title,
+            title,
             genre: args.genre,
-            blurb: args.blurb,
+            blurb,
             link: args.link,
             posterUrl: args.posterUrl,
             hypeScore: args.hypeScore,
-            isStaffPick: false, // Default false, only admin can toggle
+            isStaffPick: false,
         });
     },
 });
@@ -101,9 +131,8 @@ export const remove = mutation({
             .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
             .unique();
 
-        // Allow if user is author OR user is admin
         if (rec.userId !== identity.subject && user?.role !== "admin") {
-            throw new Error("Unauthorized");
+            throw new Error("Unauthorized: you can only delete your own recommendations");
         }
 
         await ctx.db.delete(args.id);

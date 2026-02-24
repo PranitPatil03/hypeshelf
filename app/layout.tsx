@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "hypeshelf",
-  description: "",
+  title: "hupershelf — Collect and share the movies you're hyped about",
+  description: "A shared movie recommendations hub where friends sign in and share their favorite movies in one clean, public shelf.",
 };
 
 import { Toaster } from "@/components/ui/sonner";

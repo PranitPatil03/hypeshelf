@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { searchMovies } from '@/app/actions/tmdb';
 import { Search, Loader, Check, X, Star } from 'lucide-react';
 import Image from 'next/image';
+import { recommendationSchema } from '@/lib/validation';
 
 interface AddRecModalProps {
     isOpen: boolean;
@@ -28,23 +29,19 @@ type MovieResult = {
 export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
     const createRec = useMutation(api.recommendations.create);
 
-    // Search State
     const [searchQuery, setSearchQuery] = useState('');
     const [isSearching, setIsSearching] = useState(false);
     const [searchResults, setSearchResults] = useState<MovieResult[]>([]);
 
-    // Selection State
     const [selectedMovie, setSelectedMovie] = useState<MovieResult | null>(null);
 
-    // Form State
     const [blurb, setBlurb] = useState('');
-    const [starRating, setStarRating] = useState(4); // Default 4 stars
+    const [starRating, setStarRating] = useState(4);
     const [customPosterUrl, setCustomPosterUrl] = useState('');
     const [customLink, setCustomLink] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
 
-    // Search Effect (Debounced)
     useEffect(() => {
         if (!searchQuery) {
             setSearchResults([]);
@@ -66,7 +63,6 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
         return () => clearTimeout(timeoutId);
     }, [searchQuery]);
 
-    // Handle Reset on Close or new Open
     useEffect(() => {
         if (isOpen) {
             setSearchQuery('');
@@ -84,15 +80,9 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
         e.preventDefault();
         if (!selectedMovie) return;
 
-        if (blurb.length > 250) {
-            setError("Review must be under 250 characters.");
-            return;
-        }
-
         setIsSubmitting(true);
         setError('');
 
-        // If it's a manual entry (we assigned a large Date.now() timestamp), use custom inputs
         const isManualEntry = selectedMovie.id > 100000000;
 
         const posterUrl = isManualEntry
@@ -103,15 +93,25 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
 
         const link = isManualEntry ? customLink : `https://www.themoviedb.org/movie/${selectedMovie.id}`;
 
+        const payload = {
+            title: selectedMovie.title,
+            genre: selectedMovie.genre,
+            blurb,
+            link,
+            posterUrl,
+            hypeScore: starRating * 2,
+        };
+
+        const validation = recommendationSchema.safeParse(payload);
+        if (!validation.success) {
+            const firstIssue = validation.error.issues?.[0];
+            setError(firstIssue?.message || validation.error.message || 'Validation failed. Please check your inputs.');
+            setIsSubmitting(false);
+            return;
+        }
+
         try {
-            await createRec({
-                title: selectedMovie.title,
-                genre: selectedMovie.genre,
-                blurb,
-                link,
-                posterUrl,
-                hypeScore: starRating * 2,
-            });
+            await createRec(validation.data);
             onClose();
         } catch (err: any) {
             setError(err.message || 'Failed to add recommendation.');

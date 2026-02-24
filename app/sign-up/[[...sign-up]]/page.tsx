@@ -49,7 +49,7 @@ export default function SignUpPage() {
 
             if (completeSignUp.status === 'complete') {
                 await setActive({ session: completeSignUp.createdSessionId });
-                router.push('/shelf');
+                window.location.href = '/shelf';
             } else {
                 toast.error('Verification failed. Please try again.');
             }

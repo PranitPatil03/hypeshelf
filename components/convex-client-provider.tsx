@@ -14,7 +14,6 @@ function ConvexSyncUser({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         if (isAuthenticated) {
-            // Store or update the user in Convex upon login
             storeUser().catch(console.error);
         }
     }, [isAuthenticated, storeUser]);
@@ -24,7 +23,7 @@ function ConvexSyncUser({ children }: { children: ReactNode }) {
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
     return (
-        <ClerkProvider>
+        <ClerkProvider signInForceRedirectUrl="/shelf" signUpForceRedirectUrl="/shelf">
             <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
                 <ConvexSyncUser>
                     {children}

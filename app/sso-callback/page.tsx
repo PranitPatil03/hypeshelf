@@ -8,7 +8,10 @@ export default function SSOCallback() {
                 <Loader className="w-5 h-5 animate-spin mr-3 text-slate-900" />
                 Authenticating...
             </div>
-            <AuthenticateWithRedirectCallback redirectUrl="/shelf" />
+            <AuthenticateWithRedirectCallback
+                signInForceRedirectUrl="/shelf"
+                signUpForceRedirectUrl="/shelf"
+            />
         </div>
     )
 }

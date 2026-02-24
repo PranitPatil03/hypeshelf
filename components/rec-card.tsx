@@ -1,40 +1,39 @@
 'use client';
 
 import { MoreVertical, Trash2, Star as StarIcon } from 'lucide-react';
-import { Recommendation } from '@/lib/dummy-data';
 import Image from 'next/image';
+import { MovieRatingStars } from './ui-custom/movie-rating-stars';
+import { RecAuthorBadge } from './ui-custom/rec-author-badge';
 
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 
 export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: any }) {
     const deleteRec = useMutation(api.recommendations.remove);
     const toggleStaffPick = useMutation(api.recommendations.toggleStaffPick);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
     const isAuthor = currentUser?.clerkId === rec.userId;
     const isAdmin = currentUser?.role === 'admin';
     const canEdit = isAuthor || isAdmin;
 
     const handleDelete = async () => {
-        if (confirm("Are you sure you want to delete this rec?")) {
-            await deleteRec({ id: rec.id as Id<"recommendations"> });
-        }
+        await deleteRec({ id: rec.id as Id<"recommendations"> });
+        setIsDeleteDialogOpen(false);
     };
 
     const handleToggleStaffPick = async () => {
         await toggleStaffPick({ id: rec.id as Id<"recommendations"> });
     };
 
-    // Calculate stars out of 5 based on 10-point hypeScore
-    const starCount = Math.round((rec.hypeScore || 9) / 2);
-
     return (
         <div className="group relative flex flex-col cursor-pointer bg-[#09090b] rounded-[2px] overflow-hidden text-white transition-all duration-500 aspect-4/5 sm:aspect-2/3 w-full p-5 sm:p-6 shadow-md shadow-emerald-900/ border border-white/95 selection:bg-white/30 selection:text-white justify-end">
-            {/* Background Poster */}
             <div className="absolute inset-0 block z-0">
                 {rec.posterUrl ? (
                     <Image
@@ -50,23 +49,23 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                         <span className="text-white/50 text-center font-bold text-lg">{rec.title}</span>
                     </div>
                 )}
-                {/* Gradient mask */}
+
                 <div className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-[#09090b] via-[#09090b]/80 to-transparent transition-opacity duration-300 opacity-95 group-hover:opacity-100" />
                 <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#09090b]/20 backdrop-blur-[2px] opacity-20" />
             </div>
 
-            {/* Top Overlay Badges */}
-            <div className="absolute top-4 left-4 right-4 z-20 flex items-start justify-between pointer-events-none">
-                <div className="flex flex-col gap-2 pointer-events-auto">
-                    {rec.isStaffPick && (
-                        <div className="bg-linear-to-r from-amber-200/95 to-yellow-500/95 text-yellow-950 backdrop-blur-md border border-yellow-300/50 text-[10px] sm:text-[11px] font-black px-3 py-1.5 rounded-lg tracking-widest uppercase shadow-lg shadow-yellow-900/20 flex items-center gap-1.5">
-                            <StarIcon className="w-3.5 h-3.5 fill-yellow-950" />
-                            Staff Pick
-                        </div>
-                    )}
+            {rec.isStaffPick && (
+                <div className="absolute -top-1 left-5 z-20 pointer-events-none">
+                    <div className="bg-linear-to-b from-amber-400 to-yellow-500 text-yellow-950 text-[11px] sm:text-[12px] font-black px-4 py-2 rounded-b-xl rounded-t-sm tracking-wide uppercase shadow-lg shadow-yellow-900/30 flex items-center gap-1.5">
+                        <StarIcon className="w-3.5 h-3.5 fill-yellow-950" />
+                        Staff Pick
+                    </div>
                 </div>
+            )}
 
-                {/* Options Menu */}
+            <div className="absolute top-4 left-4 right-4 z-20 flex items-start justify-between pointer-events-none">
+                <div />
+
                 {canEdit && (
                     <div className="relative pointer-events-auto">
                         <button
@@ -99,7 +98,8 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-                                            handleDelete();
+                                            setIsDeleteDialogOpen(true);
+                                            setIsMenuOpen(false);
                                         }}
                                         className="w-full text-left px-4 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-500/20 flex items-center gap-2"
                                     >
@@ -113,7 +113,6 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                 )}
             </div>
 
-            {/* Card Content Overlay */}
             <div className="relative z-10 flex flex-col w-full pointer-events-none mt-auto">
                 <a
                     href={rec.link}
@@ -127,15 +126,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                 </a>
 
                 <div className="flex flex-wrap items-center gap-3 mb-3 text-[11px] sm:text-[12px] text-white/70 font-normal tracking-wide">
-                    {/* 5-star visual representation inline instead of numbered score */}
-                    <div className="flex items-center gap-0.5">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <StarIcon
-                                key={i}
-                                className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-colors ${i < starCount ? 'text-amber-400 fill-amber-400' : 'text-white/20'}`}
-                            />
-                        ))}
-                    </div>
+                    <MovieRatingStars hypeScore={rec.hypeScore} />
                     <span className="line-clamp-1 font-semibold">{rec.genre}</span>
                 </div>
 
@@ -148,22 +139,35 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     </p>
                 </div>
 
-                <div className="flex items-center gap-3 mt-2 border-white/10 pointer-events-auto">
-                    <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-900 border border-white/20 shrink-0 shadow-sm">
-                        <img
-                            src={`https://api.dicebear.com/7.x/notionists/svg?seed=${rec.authorName}`}
-                            alt={rec.authorName}
-                            className="w-full h-full object-cover"
-                        />
-                    </div>
-                    <div className="flex flex-col leading-tight">
-                        <span className="text-[9px] text-white/50 uppercase font-black tracking-widest mb-0.5">Rec'd By</span>
-                        <span className="text-[13px] font-bold text-white/90 tracking-wide line-clamp-1">
-                            {rec.authorName}
-                        </span>
-                    </div>
-                </div>
+                <RecAuthorBadge authorName={rec.authorName} />
             </div>
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Delete Recommendation</DialogTitle>
+                        <DialogDescription>
+                            Are you sure you want to delete "{rec.title}"? This action cannot be undone.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="flex-row justify-end space-x-2 pt-4">
+                        <Button
+                            variant="outline"
+                            onClick={() => setIsDeleteDialogOpen(false)}
+                            className="w-full sm:w-auto"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={handleDelete}
+                            className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                        >
+                            Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
