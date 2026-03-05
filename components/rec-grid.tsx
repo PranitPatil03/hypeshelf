@@ -5,7 +5,6 @@ import { useQuery, usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import RecCard from "@/components/rec-card";
 import { LayoutGrid, List, Loader } from "lucide-react";
-import FilterBar from "./filter-bar";
 
 export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landing' | 'shelf' }) {
 
@@ -88,16 +87,6 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
     if (displayRecs.length === 0) {
         return (
             <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : ''}`}>
-                {mode === 'shelf' && (
-                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2 shrink-0">
-                        <FilterBar
-                            activeGenre={genre || 'All'}
-                            basePath="/shelf"
-                            className="flex-1 w-full"
-                            showMyRecs={true}
-                        />
-                    </div>
-                )}
                 <div className={`col-span-full py-20 flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-[32px] border border-slate-200 border-dashed w-full ${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar max-w-7xl mx-auto' : ''}`}>
                     <span className="text-slate-400 mb-3 text-3xl">🍿</span>
                     <h3 className="text-base font-bold text-slate-800 tracking-tight">Your shelf is empty</h3>

@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
       <div className="relative min-h-screen flex flex-col overflow-hidden">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/bg-image.png"
+            src="/bg-image-white.png"
             alt="Page Background"
             fill
             priority
