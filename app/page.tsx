@@ -18,10 +18,10 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
 
   return (
     <div className="relative font-sans">
-      <div className="relative min-h-screen flex flex-col overflow-hidden">
+      <div className="relative h-screen flex flex-col overflow-hidden">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/bg-image-white.png"
+            src="/bg-image-green.png"
             alt="Page Background"
             fill
             priority
@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
 
         <Header transparentOnTop={true} />
 
-        <main className="relative z-10 flex-1 flex flex-col justify-end items-center">
+        <main className="relative z-10 flex-1 flex flex-col justify-center items-center">
           <Hero />
         </main>
       </div>
