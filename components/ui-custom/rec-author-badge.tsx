@@ -8,7 +8,7 @@ export function RecAuthorBadge({ authorName, className = "" }: RecAuthorBadgePro
         <div className={`flex items-center gap-3 mt-2 border-white/10 pointer-events-auto ${className}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-900 border border-white/20 shrink-0 shadow-sm">
                 <img
-                    src={`https://api.dicebear.com/7.x/notionists/svg?seed=${authorName}`}
+                    src={`https://api.dicebear.com/7.x/personas/svg?seed=${authorName}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
                     alt={authorName}
                     className="w-full h-full object-cover"
                 />
