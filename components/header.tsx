@@ -45,13 +45,13 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                     >
                         <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-1.5">
                             <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
-                            <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                            <span className="text-2xl font-lora font-normal text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                         </Link>
                     </motion.div>
                 ) : (
                     <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-1.5">
                         <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
-                        <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                        <span className="text-2xl font-normal text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
                 )}
 
@@ -88,13 +88,13 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                     <SignedOut>
                         <Link
                             href="/sign-in"
-                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
+                            className="font-normal text-slate hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
                         >
                             Login
                         </Link>
                         <Link
                             href="/sign-up"
-                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
+                            className="font-normal text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
                         >
                             Sign up
                         </Link>
@@ -136,7 +136,7 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                 <div className="flex items-center justify-between px-5 py-5 border-b border-slate-100">
                     <div className="flex items-center gap-1.5">
                         <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
-                        <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
+                        <span className="text-2xl font-normal text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </div>
                     <button
                         onClick={() => setIsMenuOpen(false)}

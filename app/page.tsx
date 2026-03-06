@@ -21,13 +21,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
       <div className="relative min-h-screen flex flex-col overflow-hidden">
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
-            src="/images/bg-banners/bg-image-white.png"
+            src="/images/bg-banners/bg-image-green.png"
             alt="Page Background"
             fill
             priority
             className="object-cover object-center"
           />
         </div>
+
 
         <Header transparentOnTop={true} />
 
