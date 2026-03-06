@@ -25,13 +25,11 @@ export const runSeed = mutation({
     },
     handler: async (ctx, args) => {
         if (args.clear) {
-            // Delete all recommendations
             const recs = await ctx.db.query("recommendations").collect();
             for (const r of recs) {
                 await ctx.db.delete(r._id);
             }
 
-            // Keep admin, delete the rest for a fresh seed
             const users = await ctx.db.query("users").collect();
             for (const u of users) {
                 if (u.role !== 'admin') {
@@ -40,12 +38,10 @@ export const runSeed = mutation({
             }
         }
 
-        // Insert new seeded users
         for (const u of args.users) {
             await ctx.db.insert("users", u);
         }
 
-        // Insert new seeded recommendations
         for (const r of args.recommendations) {
             await ctx.db.insert("recommendations", r);
         }

@@ -2,8 +2,8 @@
 
 import { MoreVertical, Trash2, Star as StarIcon } from 'lucide-react';
 import Image from 'next/image';
-import { MovieRatingStars } from './ui-custom/movie-rating-stars';
-import { RecAuthorBadge } from './ui-custom/rec-author-badge';
+import { MovieRatingStars } from './shared/movie-rating-stars';
+import { RecAuthorBadge } from './shared/rec-author-badge';
 
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";

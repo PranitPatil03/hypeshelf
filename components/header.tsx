@@ -1,99 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
-import { SignedIn, SignedOut, useUser, useClerk } from '@clerk/nextjs';
-import { buttonVariants } from '@/components/ui/button';
-import { User, Loader, Menu, X } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState, useEffect, useRef } from 'react';
+import { SignedIn, SignedOut } from '@clerk/nextjs';
+import { Menu, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { AddRecModal } from './add-rec-modal';
-
-function CustomProfileDropdown() {
-    const { user } = useUser();
-    const { signOut, openUserProfile } = useClerk();
-    const router = useRouter();
-    const [isOpen, setIsOpen] = useState(false);
-    const [isSigningOut, setIsSigningOut] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
-
-    const avatarUrl = user?.hasImage
-        ? user.imageUrl
-        : `https://api.dicebear.com/7.x/notionists/svg?seed=${user?.fullName || user?.primaryEmailAddress?.emailAddress || 'user'}`;
-
-    useEffect(() => {
-        const handleClickOutside = (event: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
-
-    if (!user) return null;
-
-    return (
-        <div className="relative" ref={dropdownRef}>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="w-9 h-9 rounded-full overflow-hidden border shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition-transform active:scale-95 cursor-pointer"
-            >
-                <img src={avatarUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
-            </button>
-
-            {isOpen && (
-                <div className="absolute right-0 mt-2 w-72 bg-white rounded-sm shadow-xl border overflow-hidden z-50 animate-in fade-in slide-in-from-top-2 origin-top-right">
-                    <div className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-200 shadow-sm shrink-0">
-                                <img src={avatarUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
-                            </div>
-                            <div className="flex flex-col overflow-hidden">
-                                <span className="text-sm font-bold text-slate-900 truncate">
-                                    {user.fullName || "User"}
-                                </span>
-                                <span className="text-xs text-slate-500 truncate">
-                                    {user.primaryEmailAddress?.emailAddress}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="border-t border-slate-100" />
-                    <div className="p-2">
-                        <button
-                            onClick={() => {
-                                setIsOpen(false);
-                                openUserProfile();
-                            }}
-                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
-                        >
-                            <img src="/icons/setting.png" alt="" className="w-4 h-4" />
-                            Manage account
-                        </button>
-                        <button
-                            onClick={async () => {
-                                setIsSigningOut(true);
-                                await signOut({ redirectUrl: '/' });
-                            }}
-                            disabled={isSigningOut}
-                            className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isSigningOut ? (
-                                <Loader className="w-4 h-4 text-slate-500 animate-spin" />
-                            ) : (
-                                <img src="/icons/logout.png" alt="" className="w-4 h-4" />
-                            )}
-                            {isSigningOut ? 'Signing out...' : 'Sign out'}
-                        </button>
-                    </div>
-                </div>
-            )}
-        </div>
-    );
-}
+import { ProfileDropdown } from './shared/profile-dropdown';
 
 export default function Header({ transparentOnTop = false }: { transparentOnTop?: boolean }) {
     const [hasPassedHero, setHasPassedHero] = useState(false);
@@ -166,12 +80,18 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                         >
                             + add your recs
                         </button>
-                        <CustomProfileDropdown />
+                        <ProfileDropdown />
                     </SignedIn>
                 </div>
 
                 <div className="hidden md:flex items-center gap-4">
                     <SignedOut>
+                        <Link
+                            href="/docs"
+                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
+                        >
+                            Docs
+                        </Link>
                         <Link
                             href="/sign-in"
                             className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
@@ -194,13 +114,19 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                         )}
                     </SignedOut>
                     <SignedIn>
+                        <Link
+                            href="/docs"
+                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
+                        >
+                            Docs
+                        </Link>
                         <button
                             onClick={() => setIsAddModalOpen(true)}
                             className="text-white font-medium text-sm rounded-xl transition-all duration-200 cursor-pointer bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] -translate-y-0.5 hover:scale-105 active:scale-100 inline-flex h-9 px-4 items-center justify-center"
                         >
                             + add your recs
                         </button>
-                        <CustomProfileDropdown />
+                        <ProfileDropdown />
                     </SignedIn>
                 </div>
 
@@ -233,6 +159,13 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                 </div>
 
                 <div className="flex flex-col gap-2 p-5 flex-1">
+                    <Link
+                        href="/docs"
+                        onClick={() => setIsMenuOpen(false)}
+                        className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors underline underline-offset-4"
+                    >
+                        Docs
+                    </Link>
                     <SignedOut>
                         <Link
                             href="/sign-in"
@@ -264,7 +197,7 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                             + add your recs
                         </button>
                         <div className="px-4 py-3">
-                            <CustomProfileDropdown />
+                            <ProfileDropdown />
                         </div>
                     </SignedIn>
                 </div>
