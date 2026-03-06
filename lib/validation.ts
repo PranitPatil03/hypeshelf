@@ -3,6 +3,7 @@ import { MOVIE_GENRES } from './constants';
 
 export const ALLOWED_GENRES = [
     ...MOVIE_GENRES,
+    'Documentary',
     'Other',
     'Adventure',
     'Animation',

@@ -13,7 +13,6 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
     const resolvedParams = await searchParams;
     const activeGenre = resolvedParams.genre || 'All';
-    const activeTab = resolvedParams.tab || 'all';
 
     return (
         <div className="h-screen bg-white relative selection:bg-slate-200 flex flex-col overflow-hidden">
