@@ -4,7 +4,6 @@ import * as React from 'react';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 

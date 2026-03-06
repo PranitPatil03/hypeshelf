@@ -13,16 +13,6 @@ const GENRE_ICONS: Record<MovieGenre, string> = {
     Romance: '/icons/heart.png',
 };
 
-const GENRE_HOVER_ANIM: Record<MovieGenre, string> = {
-    Action: 'group-hover:scale-125',
-    Comedy: 'group-hover:scale-125',
-    Drama: 'group-hover:scale-125',
-    'Sci-Fi': 'group-hover:scale-125',
-    Horror: 'group-hover:scale-125',
-    Thriller: 'group-hover:scale-125',
-    Romance: 'group-hover:scale-125',
-};
-
 interface FilterBarProps {
     activeGenre: string;
     basePath: string;
@@ -71,7 +61,6 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
             </Link>
             {MOVIE_GENRES.map((genre) => {
                 const iconSrc = GENRE_ICONS[genre];
-                const hoverAnim = GENRE_HOVER_ANIM[genre];
                 return (
                     <Link
                         key={genre}
@@ -82,7 +71,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                             : 'bg-white text-slate-600 hover:bg-slate-50'
                             }`}
                     >
-                        <img src={iconSrc} alt={genre} className={`w-3.5 h-3.5 transition-transform duration-300 ${hoverAnim}`} />
+                        <img src={iconSrc} alt={genre} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                         {genre}
                     </Link>
                 );

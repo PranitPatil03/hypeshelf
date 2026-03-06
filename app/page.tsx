@@ -44,7 +44,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
           </div>
         </div>
 
-        <div className="sticky top-[68px] z-40 bg-white py-4 mb-8 w-full border-b border-transparent">
+        <div className="sticky top-17 z-40 bg-white py-4 mb-8 w-full border-b border-transparent">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6">
             <FilterBar
               activeGenre={activeGenre}

@@ -30,7 +30,6 @@ if (!NEXT_PUBLIC_CONVEX_URL) throw new Error("Missing NEXT_PUBLIC_CONVEX_URL");
 
 const convex = new ConvexHttpClient(NEXT_PUBLIC_CONVEX_URL);
 
-// --- Review Generation Logic ---
 const highHypeStarts = [
     "Mind-blowing visuals.", "A total masterpiece.", "Literally could not stop watching.",
     "Classic.", "One of my recent favorites.", "Easily in my top 10.",
@@ -47,7 +46,6 @@ function generateReview(movieOverview: string, score: number) {
     const start = list[Math.floor(Math.random() * list.length)];
     const overviewTruncated = movieOverview ? movieOverview.substring(0, 100).trim() + "..." : "Really interesting premise and solid execution.";
 
-    // Combine randomly
     const options = [
         `${start} ${overviewTruncated}`,
         `${overviewTruncated} ${start}`,
@@ -61,96 +59,78 @@ const genreMap: Record<number, string> = {
     28: "Action", 12: "Adventure", 16: "Animation", 35: "Comedy",
     80: "Crime", 99: "Documentary", 18: "Drama", 10751: "Family",
     14: "Fantasy", 36: "History", 27: "Horror", 10402: "Music",
-    9648: "Mystery", 10749: "Romance", 878: "Science Fiction",
+    9648: "Mystery", 10749: "Romance", 878: "Sci-Fi",
     10770: "TV Movie", 53: "Thriller", 10752: "War", 37: "Western"
 };
 
 async function seed() {
     console.log("Starting Seeding Process...");
 
-    // 1. Fetch existing users to delete test ones
-    console.log("Cleaning up old test users in Clerk...");
+    console.log("Fetching existing users from Clerk...");
     const clerkRes = await fetch("https://api.clerk.com/v1/users?limit=100", {
         headers: { "Authorization": `Bearer ${CLERK_SECRET_KEY}` }
     });
     const clerkUsers = await clerkRes.json();
-    for (const u of clerkUsers) {
-        if (u.email_addresses && u.email_addresses[0]?.email_address.endsWith("313@gmail.com")) {
-            await fetch(`https://api.clerk.com/v1/users/${u.id}`, {
-                method: "DELETE",
-                headers: { "Authorization": `Bearer ${CLERK_SECRET_KEY}` }
-            });
-            console.log(`Deleted Clerk user ${u.id}`);
-        }
+
+    const existingUsers = clerkUsers.map((u: any) => {
+        const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || "Anonymous";
+        const email = u.email_addresses?.[0]?.email_address || "";
+        return {
+            clerkId: u.id,
+            name,
+            email,
+            role: "user" as const,
+        };
+    });
+
+    if (existingUsers.length === 0) {
+        throw new Error("No existing Clerk users found!");
     }
+    console.log(`Found ${existingUsers.length} existing users.`);
 
-    // 2. Create 10 new distinct users
-    console.log("Creating 10 new dummy users in Clerk...");
-    const dummyUsers: { clerkId: string; name: string; email: string; role: "user" }[] = [];
-    const names = [
-        "Emily Chen", "Michael Rodriguez", "Sarah Jenkins", "David Kim",
-        "Jessica Taylor", "Christopher Lee", "Amanda Patel",
-        "Matthew Davis", "Olivia Martinez", "Daniel Wilson"
-    ];
+    const genreQueries: Record<string, number> = {
+        Action: 28, Comedy: 35, Drama: 18, "Sci-Fi": 878,
+        Horror: 27, Thriller: 53, Romance: 10749,
+        Adventure: 12, Animation: 16, Crime: 80, Documentary: 99,
+        Fantasy: 14,
+    };
 
-    for (let i = 0; i < 10; i++) {
-        const firstName = names[i].split(" ")[0].toLowerCase();
-        const lastName = names[i].split(" ")[1].toLowerCase();
-        const email = `${firstName}${lastName}313@gmail.com`;
-        const res = await fetch("https://api.clerk.com/v1/users", {
-            method: "POST",
-            headers: {
-                "Authorization": `Bearer ${CLERK_SECRET_KEY}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email_address: [email],
-                password: "TestUser2026!",
-                skip_password_checks: true,
-                first_name: names[i].split(" ")[0],
-                last_name: names[i].split(" ")[1]
-            })
-        });
-
-        if (!res.ok) {
-            console.error(`Failed to create user ${email}`, await res.text());
-            continue;
-        }
-
-        const data = await res.json();
-        console.log(`Created user: ${email} -> ${data.id}`);
-        dummyUsers.push({
-            clerkId: data.id,
-            name: names[i],
-            email: email,
-            role: "user" as const
-        });
-    }
-
-    // 3. Fetch 1000 TMDB Movies
-    console.log("Fetching 1000 movies from TMDB...");
+    console.log("Fetching movies by genre from TMDB...");
     let allMovies: any[] = [];
-    for (let page = 1; page <= 50; page++) {
-        const res = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${TMDB_API_KEY}&language=en-US&page=${page}`);
-        const data = await res.json();
-        if (data.results) {
-            allMovies.push(...data.results);
+    const seen = new Set<number>();
+
+    for (const [genreName, genreId] of Object.entries(genreQueries)) {
+        for (let page = 1; page <= 2; page++) {
+            const res = await fetch(
+                `https://api.themoviedb.org/3/discover/movie?api_key=${TMDB_API_KEY}&language=en-US&sort_by=popularity.desc&with_genres=${genreId}&page=${page}`
+            );
+            const data = await res.json();
+            if (data.results) {
+                for (const m of data.results) {
+                    if (!seen.has(m.id)) {
+                        seen.add(m.id);
+                        allMovies.push({ ...m, _forcedGenre: genreName });
+                    }
+                }
+            }
         }
-        if (page % 10 === 0) console.log(`Fetched ${page * 20} movies...`);
+        console.log(`Fetched ${genreName}: ${allMovies.length} total unique movies so far`);
     }
 
-    // Map TMDB movies to Recommendations
+    allMovies.sort(() => Math.random() - 0.5);
+    allMovies = allMovies.slice(0, 220);
+
     const recommendations = allMovies.map(movie => {
-        const randomUser = dummyUsers[Math.floor(Math.random() * dummyUsers.length)];
-        const hypeScore = Math.floor(Math.random() * 5) * 2 + 2; // 2, 4, 6, 8, or 10
-        const isStaffPick = Math.random() > 0.95; // 5% chance to be a staff pick
-        const genre = movie.genre_ids && movie.genre_ids.length > 0 ? genreMap[movie.genre_ids[0]] || "Other" : "Other";
+        const randomUser = existingUsers[Math.floor(Math.random() * existingUsers.length)];
+        const hypeScore = Math.floor(Math.random() * 5) * 2 + 2;
+        const isStaffPick = Math.random() > 0.85; // ~15% staff picks
+        const genre = movie._forcedGenre || (movie.genre_ids && movie.genre_ids.length > 0 ? genreMap[movie.genre_ids[0]] || "Other" : "Other");
         const posterUrl = movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : "";
 
         return {
             userId: randomUser.clerkId,
             userName: randomUser.name,
-            userAvatar: `https://api.dicebear.com/7.x/personas/svg?seed=${randomUser.clerkId}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`,
+            userAvatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(randomUser.name)}`,
             title: movie.title,
             genre: genre,
             link: `https://www.themoviedb.org/movie/${movie.id}`,
@@ -163,27 +143,22 @@ async function seed() {
 
     console.log(`Prepared ${recommendations.length} recommendations!`);
 
-    // 4. Send to Convex in chunks
-    // Since max payload size could be an issue, we'll chunk into batches of 100
     console.log("Seeding to Convex (First batch clears old data)...");
-    const chunkSize = 100;
+    const chunkSize = 50;
     for (let i = 0; i < recommendations.length; i += chunkSize) {
         const chunk = recommendations.slice(i, i + chunkSize);
         const isFirstChunk = i === 0;
 
         await convex.mutation(api.seed.runSeed, {
             clear: isFirstChunk,
-            users: isFirstChunk ? dummyUsers : [],
+            users: isFirstChunk ? existingUsers : [],
             recommendations: chunk
         });
 
         console.log(`Inserted chunk ${i / chunkSize + 1} / ${Math.ceil(recommendations.length / chunkSize)}`);
     }
 
-    console.log("✅ Seed complete! You now have 10 test users and 1000 recommendations.");
-    console.log("Test login using:");
-    console.log("Email: emilychen313@gmail.com");
-    console.log("Password: TestUser2026!");
+    console.log(`✅ Seed complete! ${recommendations.length} recommendations using ${existingUsers.length} existing users.`);
 }
 
 seed().catch(console.error);

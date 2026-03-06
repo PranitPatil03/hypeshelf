@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery, usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
 import RecCard from "@/components/rec-card";
-import { LayoutGrid, List, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
 export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landing' | 'shelf' }) {
 

@@ -1,10 +1,6 @@
 import { z } from 'zod';
 import { MOVIE_GENRES } from './constants';
 
-/**
- * Allowed genres for recommendations.
- * Includes the app's core genres + extended TMDB genres mapped in the search.
- */
 export const ALLOWED_GENRES = [
     ...MOVIE_GENRES,
     'Other',
@@ -22,10 +18,6 @@ export const ALLOWED_GENRES = [
     'Western',
 ] as const;
 
-/**
- * Safe URL schema — only allows http/https protocols.
- * Prevents XSS via javascript: or data: URI injection.
- */
 const safeUrlSchema = z
     .string()
     .trim()
@@ -34,10 +26,6 @@ const safeUrlSchema = z
         { message: 'Must be a valid http or https URL' }
     );
 
-/**
- * Zod schema for creating a new recommendation.
- * Applied on the client before submission to Convex for defense-in-depth.
- */
 export const recommendationSchema = z.object({
     title: z
         .string()
