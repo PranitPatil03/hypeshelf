@@ -22,7 +22,7 @@ A community-driven movie recommendations platform where users drop their favorit
 - **Full CRUD** — Create, edit, and delete recommendations. Users manage their own; admins manage all
 - **Staff Picks Curation** — Admins mark standout recs with a gold Staff Pick badge
 - **Role-Based Access Control** — Admin/User roles via server-side email allowlist with zero UI attack surface
-- **Genre Filtering** — 21 filterable genres (8 primary + 13 extended from TMDB) with animated pill UI
+- **Genre Filtering** — 21 filterable genres (7 primary + 14 extended from TMDB) with animated pill UI
 - **Infinite Scroll** — IntersectionObserver triggers automatic page loads with cursor-based pagination
 - **Defense-in-Depth Validation** — Zod schemas on client + independent Convex runtime checks on server
 - **Clerk Authentication** — Email + Google + X OAuth with fully custom sign-in/sign-up pages
@@ -223,8 +223,11 @@ hypeshelf/
 │   │   ├── sonner.tsx                    # Toast notifications
 │   │   └── textarea.tsx                  # Multi-line text input
 │   │
-│   ├── ui-custom/                        # Custom UI components
+│   ├── shared/                           # Custom shared components
 │   │   ├── movie-rating-stars.tsx        # Read-only half-star SVG display
+│   │   ├── movie-search.tsx              # TMDB movie search with debounce
+│   │   ├── star-rating-input.tsx         # Half-star precision rating input
+│   │   ├── profile-dropdown.tsx          # User profile dropdown with admin badge
 │   │   └── rec-author-badge.tsx          # Author avatar + name (DiceBear fallback)
 │   │
 │   └── animate-ui/                       # Motion-animated icons
@@ -239,7 +242,9 @@ hypeshelf/
 │   ├── recommendations.ts               # CRUD + RBAC mutations + paginated query
 │   ├── users.ts                          # Upsert on login + role from ADMIN_EMAILS
 │   ├── auth.config.ts                    # Clerk JWT issuer configuration
-│   ├── seed.ts                           # Bulk insert mutation for seeding
+│   ├── seed.ts                           # Bulk insert mutation for seeding (admin-only)
+│   ├── lib/
+│   │   └── admin.ts                      # Shared admin utilities (isAdminEmail)
 │   └── _generated/                       # Auto-generated typed API (do not edit)
 │
 ├── lib/                                  # Shared utilities

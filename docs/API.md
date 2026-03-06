@@ -86,7 +86,7 @@ Updates an existing recommendation. Users can edit their own; admins can edit an
 1. Verifies authentication via JWT
 2. Fetches the recommendation by ID
 3. Checks ownership: `rec.userId === identity.subject`
-4. If not owner, checks admin role: `user.role === "admin"`
+4. If not owner, checks admin via `isAdminEmail(identity.email)` against `ADMIN_EMAILS` env var
 5. If neither, throws `"Unauthorized: you can only edit your own recommendations"`
 6. Runs the same 6-field validation as `create`
 7. Patches only the editable fields (userId, userName, userAvatar, isStaffPick are preserved)
@@ -111,7 +111,7 @@ Deletes a recommendation. Users can delete their own; admins can delete any.
 1. Verifies authentication via JWT
 2. Fetches the recommendation by ID
 3. Checks ownership: `rec.userId === identity.subject`
-4. If not owner, checks admin role: `user.role === "admin"`
+4. If not owner, checks admin via `isAdminEmail(identity.email)` against `ADMIN_EMAILS` env var
 5. If neither, throws `"Unauthorized: you can only delete your own recommendations"`
 
 **Returns:** `void`
@@ -132,7 +132,7 @@ Toggles the `isStaffPick` boolean on a recommendation. Admin-only.
 
 **Authorization logic:**
 1. Verifies authentication via JWT
-2. Fetches user record, checks `role === "admin"`
+2. Checks admin via `isAdminEmail(identity.email)` against `ADMIN_EMAILS` env var
 3. Toggles `isStaffPick` to the opposite boolean value
 
 **Returns:** `void`

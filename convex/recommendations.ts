@@ -1,6 +1,7 @@
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { paginationOptsValidator } from "convex/server";
+import { isAdminEmail } from "./lib/admin";
 
 const ALLOWED_GENRES = [
     "Action", "Comedy", "Drama", "Sci-Fi", "Horror", "Thriller", "Romance", "Documentary",
@@ -133,12 +134,9 @@ export const remove = mutation({
         const rec = await ctx.db.get(args.id);
         if (!rec) throw new Error("Recommendation not found");
 
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-            .unique();
+        const isAdmin = isAdminEmail(identity.email);
 
-        if (rec.userId !== identity.subject && user?.role !== "admin") {
+        if (rec.userId !== identity.subject && !isAdmin) {
             throw new Error("Unauthorized: you can only delete your own recommendations");
         }
 
@@ -152,12 +150,7 @@ export const toggleStaffPick = mutation({
         const identity = await ctx.auth.getUserIdentity();
         if (!identity) throw new Error("Unauthenticated");
 
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-            .unique();
-
-        if (user?.role !== "admin") {
+        if (!isAdminEmail(identity.email)) {
             throw new Error("Only admins can toggle staff picks");
         }
 
@@ -187,12 +180,9 @@ export const update = mutation({
         const rec = await ctx.db.get(args.id);
         if (!rec) throw new Error("Recommendation not found");
 
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-            .unique();
+        const isAdmin = isAdminEmail(identity.email);
 
-        if (rec.userId !== identity.subject && user?.role !== "admin") {
+        if (rec.userId !== identity.subject && !isAdmin) {
             throw new Error("Unauthorized: you can only edit your own recommendations");
         }
 

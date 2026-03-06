@@ -98,10 +98,17 @@ hypeshelf/
 │   │   ├── sonner.tsx                    # Toast notification provider
 │   │   └── textarea.tsx                  # Multi-line text input
 │   │
-│   ├── ui-custom/                        # Custom UI components
+│   ├── shared/                           # Shared custom components
 │   │   ├── movie-rating-stars.tsx        # Read-only half-star display (SVG-based)
 │   │   │                                 #   - Renders 5 stars with fill based on hypeScore
 │   │   │                                 #   - Supports half-star precision (score 1-10 → 0.5-5 stars)
+│   │   ├── movie-search.tsx              # TMDB movie search with debounce
+│   │   │                                 #   - Calls Server Action for API key protection
+│   │   ├── star-rating-input.tsx         # Half-star precision rating input
+│   │   │                                 #   - Click left/right halves for 0.5 precision
+│   │   ├── profile-dropdown.tsx          # User profile dropdown
+│   │   │                                 #   - Admin badge when user role is admin
+│   │   │                                 #   - Manage account + Sign out
 │   │   └── rec-author-badge.tsx          # Author avatar + name badge
 │   │                                     #   - DiceBear fallback avatar
 │   │                                     #   - Positioned at bottom of RecCard
@@ -135,8 +142,15 @@ hypeshelf/
 │   ├── auth.config.ts                    # Clerk JWT issuer configuration
 │   │                                     #   - Domain and applicationID for Convex auth
 │   │
-│   ├── seed.ts                           # Seed mutation
+│   ├── seed.ts                           # Seed mutation (admin-only)
+│   │                                     #   - Auth guard: requires admin email
 │   │                                     #   - Bulk inserts sample recommendations
+│   │
+│   ├── lib/
+│   │   └── admin.ts                      # Shared admin utilities
+│   │                                     #   - getAdminEmails() reads ADMIN_EMAILS env var
+│   │                                     #   - isAdminEmail() checks if email is admin
+│   │                                     #   - Single source of truth for admin checks
 │   │
 │   ├── tsconfig.json                     # Convex-specific TypeScript config
 │   │

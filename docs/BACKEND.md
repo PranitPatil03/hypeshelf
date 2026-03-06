@@ -77,7 +77,14 @@ Any genre value not in this list is rejected by the `create` mutation with `"Inv
 
 ## Server Functions
 
-All server logic lives in two files:
+All server logic lives in three files:
+
+### [`convex/lib/admin.ts`](../convex/lib/admin.ts)
+
+| Function | Description |
+|---|---|
+| `getAdminEmails()` | Reads `ADMIN_EMAILS` env var, returns array of admin email strings |
+| `isAdminEmail(email)` | Checks if the given email is in the admin list |
 
 ### [`convex/recommendations.ts`](../convex/recommendations.ts)
 
@@ -85,8 +92,8 @@ All server logic lives in two files:
 |---|---|---|---|
 | `getAll` | Query (paginated) | No | Fetches recommendations with cursor pagination. Accepts optional `genre`, `myRecs`, and `staffPicks` filters. Filters use database indexes for efficient queries. |
 | `create` | Mutation | Yes | Creates a new recommendation. Validates all fields server-side (genre allowlist, URL sanitization, length limits, hypeScore range). Pulls `userId`, `userName`, `userAvatar` from the verified JWT + user record — never from client input. |
-| `update` | Mutation | Yes | Updates an existing recommendation. Same 6-field validation as `create`. Ownership check: `rec.userId === identity.subject`. Admins bypass ownership check. Preserves `userId`, `userName`, `userAvatar`, `isStaffPick`. |
-| `remove` | Mutation | Yes | Deletes a recommendation. Ownership check: `rec.userId === identity.subject`. Admins bypass ownership check via `user.role === "admin"`. |
+| `update` | Mutation | Yes | Updates an existing recommendation. Same 6-field validation as `create`. Ownership check: `rec.userId === identity.subject`. Admins verified via `isAdminEmail(identity.email)`. Preserves `userId`, `userName`, `userAvatar`, `isStaffPick`. |
+| `remove` | Mutation | Yes | Deletes a recommendation. Ownership check: `rec.userId === identity.subject`. Admins verified via `isAdminEmail(identity.email)` against `ADMIN_EMAILS` env var. |
 | `toggleStaffPick` | Mutation | Yes (admin) | Toggles `isStaffPick` boolean. Only admins can call — non-admin callers get `"Only admins can toggle staff picks"` error. |
 
 ### [`convex/users.ts`](../convex/users.ts)

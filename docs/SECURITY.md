@@ -66,7 +66,7 @@ npx convex env set ADMIN_EMAILS "admin1@example.com,admin2@example.com"
 
 | Layer | Purpose | Is it a security boundary? |
 |---|---|---|
-| **Convex mutations** (server) | Checks `ctx.auth.getUserIdentity()` + `user.role` before every write | **Yes — authoritative** |
+| **Convex mutations** (server) | Checks `ctx.auth.getUserIdentity()` + `isAdminEmail(identity.email)` before every write | **Yes — authoritative** |
 | **React components** (client) | Conditionally renders admin-only buttons (delete any, staff pick toggle) | **No — UX convenience only** |
 
 The client layer improves UX but provides no security guarantee. Hiding a React button is never a security boundary.
@@ -76,24 +76,25 @@ The client layer improves UX but provides no security guarantee. Hiding a React 
 Every mutation in [`convex/recommendations.ts`](../convex/recommendations.ts) follows the same pattern:
 
 ```typescript
+import { isAdminEmail } from "./lib/admin";
+
 // 1. Verify authentication
 const identity = await ctx.auth.getUserIdentity();
 if (!identity) throw new Error("Unauthenticated");
 
-// 2. Look up user record (for role)
-const user = await ctx.db
-  .query("users")
-  .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-  .unique();
+// 2. Check admin status directly against ADMIN_EMAILS env var
+const isAdmin = isAdminEmail(identity.email);
 
-// 3. Check authorization
-if (rec.userId !== identity.subject && user?.role !== "admin") {
+// 3. Check authorization (owner OR admin)
+if (rec.userId !== identity.subject && !isAdmin) {
   throw new Error("Unauthorized: you can only modify your own recommendations");
 }
 
 // 4. Execute operation (same pattern for update, remove, toggleStaffPick)
 await ctx.db.delete(args.id); // or ctx.db.patch(args.id, { ... })
 ```
+
+> **Note:** Admin checks use `isAdminEmail(identity.email)` which reads the `ADMIN_EMAILS` env var in real-time. This means revoking an admin's email from the env var takes effect immediately on their next API call — no page refresh or re-login required.
 
 ---
 

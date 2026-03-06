@@ -25,6 +25,10 @@ export const runSeed = mutation({
         }))
     },
     handler: async (ctx, args) => {
+        // Auth guard: only admins can seed
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Unauthenticated: must be logged in to seed");
+        if (!isAdminEmail(identity.email)) throw new Error("Unauthorized: only admins can seed");
 
         if (args.clear) {
             const recs = await ctx.db.query("recommendations").collect();
