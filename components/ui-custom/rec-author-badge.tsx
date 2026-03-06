@@ -1,14 +1,16 @@
 interface RecAuthorBadgeProps {
     authorName: string;
+    avatarUrl?: string;
     className?: string;
 }
 
-export function RecAuthorBadge({ authorName, className = "" }: RecAuthorBadgeProps) {
+export function RecAuthorBadge({ authorName, avatarUrl, className = "" }: RecAuthorBadgeProps) {
+    const imgSrc = avatarUrl || `https://api.dicebear.com/7.x/personas/svg?seed=${authorName}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`;
     return (
         <div className={`flex items-center gap-3 mt-2 border-white/10 pointer-events-auto ${className}`}>
             <div className="w-8 h-8 rounded-full overflow-hidden bg-slate-900 border border-white/20 shrink-0 shadow-sm">
                 <img
-                    src={`https://api.dicebear.com/7.x/personas/svg?seed=${authorName}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffd5dc,ffdfbf`}
+                    src={imgSrc}
                     alt={authorName}
                     className="w-full h-full object-cover"
                 />
