@@ -1,5 +1,6 @@
 import { mutation } from "./_generated/server";
 import { v } from "convex/values";
+import { isAdminEmail } from "./lib/admin";
 
 export const runSeed = mutation({
     args: {
@@ -24,18 +25,6 @@ export const runSeed = mutation({
         }))
     },
     handler: async (ctx, args) => {
-        const identity = await ctx.auth.getUserIdentity();
-        if (!identity) {
-            throw new Error("Must be logged in to seed data");
-        }
-
-        const user = await ctx.db
-            .query("users")
-            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
-            .unique();
-        if (user?.role !== "admin") {
-            throw new Error("Only admins can seed data");
-        }
 
         if (args.clear) {
             const recs = await ctx.db.query("recommendations").collect();
@@ -52,12 +41,18 @@ export const runSeed = mutation({
         }
 
         for (const u of args.users) {
+            // Determine the correct role based on ADMIN_EMAILS env var
+            const role = isAdminEmail(u.email) ? "admin" : u.role;
+
             const existing = await ctx.db
                 .query("users")
                 .withIndex("by_clerkId", (q) => q.eq("clerkId", u.clerkId))
                 .unique();
             if (!existing) {
-                await ctx.db.insert("users", u);
+                await ctx.db.insert("users", { ...u, role });
+            } else if (existing.role !== role) {
+                // Update role if it changed (e.g. user should now be admin)
+                await ctx.db.patch(existing._id, { role });
             }
         }
 
