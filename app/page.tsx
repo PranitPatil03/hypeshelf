@@ -31,7 +31,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
 
         <Header transparentOnTop={true} />
 
-        <main className="relative z-10 flex-1 flex flex-col justify-end items-center">
+        <main className="relative z-10 flex-1 flex flex-col justify-center items-center">
           <Hero />
         </main>
       </div>
