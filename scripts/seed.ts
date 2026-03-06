@@ -86,7 +86,7 @@ async function seed() {
 
     // 2. Create 10 new distinct users
     console.log("Creating 10 new dummy users in Clerk...");
-    const dummyUsers = [];
+    const dummyUsers: { clerkId: string; name: string; email: string; role: "user" }[] = [];
     const names = [
         "Emily Chen", "Michael Rodriguez", "Sarah Jenkins", "David Kim",
         "Jessica Taylor", "Christopher Lee", "Amanda Patel",
