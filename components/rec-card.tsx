@@ -1,6 +1,6 @@
 'use client';
 
-import { MoreVertical, Trash2, Star as StarIcon, Pencil, Check, X, Loader } from 'lucide-react';
+import { MoreVertical, Check, X, Loader } from 'lucide-react';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { MovieRatingStars } from './shared/movie-rating-stars';
@@ -101,8 +101,8 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
     };
 
     return (
-        <div className="group relative flex flex-col cursor-pointer bg-[#09090b] rounded-[2px] overflow-hidden text-white transition-all duration-500 aspect-4/5 sm:aspect-2/3 w-full p-5 sm:p-6 shadow-md shadow-emerald-900/ border border-white/95 selection:bg-white/30 selection:text-white justify-end">
-            <div className="absolute inset-0 block z-0">
+        <div className={`group relative flex flex-col cursor-pointer bg-[#09090b] rounded-[2px] text-white transition-all duration-500 aspect-4/5 sm:aspect-2/3 w-full p-5 sm:p-6 shadow-md shadow-emerald-900/ border border-white/95 selection:bg-white/30 selection:text-white justify-end ${isMenuOpen ? 'overflow-visible' : 'overflow-hidden'}`}>
+            <div className="absolute inset-0 block z-0 overflow-hidden">
                 {rec.posterUrl ? (
                     <Image
                         src={rec.posterUrl}
@@ -144,7 +144,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                 e.preventDefault();
                                 setIsMenuOpen(!isMenuOpen)
                             }}
-                            className="p-1 rounded text-white/80 hover:text-white cursor-pointer transition-all drop-shadow-md"
+                            className="p-1 rounded text-white/80 hover:text-white cursor-pointer transition-all duration-200 drop-shadow-md"
                         >
                             <MoreVertical className="w-5 h-5" />
                         </button>
@@ -152,7 +152,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                         {isMenuOpen && (
                             <>
                                 <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
-                                <div className="absolute right-0 bottom-full mb-2 w-44 bg-[#18181b]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/10 z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+                                <div className="absolute left-full ml-2 bottom-0 w-44 bg-white rounded-sm shadow-xl border border-slate-100 z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-left-2">
                                     {isAdmin && (
                                         <button
                                             onClick={(e) => {
@@ -160,9 +160,9 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                                 handleToggleStaffPick();
                                                 setIsMenuOpen(false);
                                             }}
-                                            className="w-full text-left px-4 py-2.5 text-sm font-semibold text-white/90 hover:bg-white/10 flex items-center gap-2"
+                                            className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                         >
-                                            <StarIcon className="w-4 h-4 text-emerald-400" />
+                                            <img src="/icons/badge.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                             {rec.isStaffPick ? 'Unmark Pick' : 'Staff Pick'}
                                         </button>
                                     )}
@@ -172,9 +172,9 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                             openEditDialog();
                                             setIsMenuOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-white/90 hover:bg-white/10 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                     >
-                                        <Pencil className="w-4 h-4 text-blue-400" />
+                                        <img src="/icons/edit.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                         Edit
                                     </button>
                                     <button
@@ -183,9 +183,9 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                             setIsDeleteDialogOpen(true);
                                             setIsMenuOpen(false);
                                         }}
-                                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-red-400 hover:bg-red-500/20 flex items-center gap-2"
+                                        className="w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                     >
-                                        <Trash2 className="w-4 h-4" />
+                                        <img src="/icons/delete.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                         Delete
                                     </button>
                                 </div>

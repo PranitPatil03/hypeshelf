@@ -3,6 +3,8 @@
 import { useUser, useClerk } from '@clerk/nextjs';
 import { Loader } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useQuery } from 'convex/react';
+import { api } from '@/convex/_generated/api';
 
 export function ProfileDropdown() {
   const { user } = useUser();
@@ -10,6 +12,8 @@ export function ProfileDropdown() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const convexUser = useQuery(api.users.current);
+  const isAdmin = convexUser?.role === 'admin';
 
   const avatarUrl = user?.hasImage
     ? user.imageUrl
@@ -44,9 +48,16 @@ export function ProfileDropdown() {
                 <img src={avatarUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col overflow-hidden">
-                <span className="text-sm font-bold text-slate-900 truncate">
-                  {user.fullName || "User"}
-                </span>
+                <div className="flex items-center gap-1.5">
+                  <span className="text-sm font-bold text-slate-900 truncate">
+                    {user.fullName || "User"}
+                  </span>
+                  {isAdmin && (
+                    <span className="shrink-0 text-[10px] font-semibold uppercase tracking-wider text-slate-900 border border-slate-300 rounded-md px-1.5 py-0.5 leading-none">
+                      Admin
+                    </span>
+                  )}
+                </div>
                 <span className="text-xs text-slate-500 truncate">
                   {user.primaryEmailAddress?.emailAddress}
                 </span>
