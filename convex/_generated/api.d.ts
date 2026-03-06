@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as lib_admin from "../lib/admin.js";
 import type * as recommendations from "../recommendations.js";
 import type * as seed from "../seed.js";
 import type * as users from "../users.js";
@@ -19,6 +20,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "lib/admin": typeof lib_admin;
   recommendations: typeof recommendations;
   seed: typeof seed;
   users: typeof users;

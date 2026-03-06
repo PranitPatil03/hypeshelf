@@ -1,12 +1,5 @@
 import { mutation, query } from "./_generated/server";
-
-function getAdminEmails(): string[] {
-    const envEmails = process.env.ADMIN_EMAILS;
-    if (envEmails) {
-        return envEmails.split(",").map((e) => e.trim().toLowerCase());
-    }
-    return ["patilpranit3112@gmail.com"];
-}
+import { isAdminEmail } from "./lib/admin";
 
 export const store = mutation({
     args: {},
@@ -21,8 +14,7 @@ export const store = mutation({
             .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
             .unique();
 
-        const adminEmails = getAdminEmails();
-        const role = adminEmails.includes(identity.email?.toLowerCase() || "") ? "admin" : "user";
+        const role = isAdminEmail(identity.email) ? "admin" : "user";
 
         if (user !== null) {
             if (user.name !== identity.name || user.email !== identity.email || user.role !== role) {

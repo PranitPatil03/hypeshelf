@@ -110,11 +110,13 @@ Start the Convex development server (deploys schema + functions):
 npx convex dev
 ```
 
-Set admin email(s) so your account gets the `admin` role on login:
+Set admin email(s) so your account gets the `admin` role on login (comma-separated for multiple admins):
 
 ```bash
-npx convex env set ADMIN_EMAILS "your-email@example.com"
+npx convex env set ADMIN_EMAILS "your-email@example.com,another-admin@example.com" --prod
 ```
+
+**Note:** Only users whose email is listed in `ADMIN_EMAILS` will be assigned the admin role. Admins are required for seeding and privileged actions.
 
 Set the Clerk JWT issuer domain (required for Convex to verify Clerk tokens):
 
@@ -134,13 +136,21 @@ npx convex env set CLERK_JWT_ISSUER_DOMAIN "https://<your-clerk-domain>.clerk.ac
 
 ### 5. Seed the Database (Optional)
 
-Populate the database with ~220 movie recommendations across all 21 genres:
+**Seeding is admin-only:**
+
+Populate the database with ~220 movie recommendations across all 21 genres (must be logged in as admin):
 
 ```bash
 npx tsx scripts/seed.ts
 ```
 
-This fetches real movie data from TMDB, generates random user names, and inserts ~220 recs with real poster images.
+If you need to clear the recommendations table for testing, run:
+
+```bash
+npx convex function call recommendations:clearAll
+```
+
+This fetches real movie data from TMDB, generates random user names, and inserts ~220 recs with real poster images. Only admins (emails in `ADMIN_EMAILS`) can seed.
 
 ### 6. Run the Dev Server
 

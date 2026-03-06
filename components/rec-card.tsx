@@ -134,7 +134,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                 </div>
             )}
 
-            <div className="absolute top-4 left-4 right-4 z-20 flex items-start justify-between pointer-events-none">
+            <div className="absolute bottom-4 left-4 right-4 z-20 flex items-end justify-between pointer-events-none">
                 <div />
 
                 {canEdit && (
@@ -152,7 +152,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                         {isMenuOpen && (
                             <>
                                 <div className="fixed inset-0 z-40" onClick={() => setIsMenuOpen(false)} />
-                                <div className="absolute right-0 top-full mt-2 w-44 bg-[#18181b]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/10 z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                <div className="absolute right-0 bottom-full mb-2 w-44 bg-[#18181b]/95 backdrop-blur-xl rounded-xl shadow-2xl border border-white/10 z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-bottom-2">
                                     {isAdmin && (
                                         <button
                                             onClick={(e) => {
