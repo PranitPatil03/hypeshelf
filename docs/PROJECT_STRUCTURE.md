@@ -71,7 +71,7 @@ hypeshelf/
 │   │                                     #   - Expandable blurb (click to show full text)
 │   │
 │   ├── filter-bar.tsx                    # Genre filter pills
-│   │                                     #   - 8 primary genres + "Staff Picks" + "My Recs"
+│   │                                     #   - 7 primary genres + "Staff Picks" + "My Recs"
 │   │                                     #   - Animated pill transitions with motion/react
 │   │                                     #   - Horizontal scroll on mobile
 │   │

@@ -15,7 +15,23 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "hypeshelf",
-  description: "collect and share the movies you're hyped about"
+  description: "collect and share the movies you're hyped about",
+  openGraph: {
+    title: "hypeshelf",
+    description: "collect and share the movies you're hyped about",
+    url: "https://hypeshelf.vercel.app",
+    siteName: "hypeshelf",
+    images: [
+      {
+        url: "https://hypeshelf.vercel.app/images/bg-banners/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "hypeshelf",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 import { Toaster } from "@/components/ui/sonner";

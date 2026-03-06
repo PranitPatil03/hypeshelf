@@ -248,7 +248,7 @@ hypeshelf/
 │   └── _generated/                       # Auto-generated typed API (do not edit)
 │
 ├── lib/                                  # Shared utilities
-│   ├── constants.ts                      # MOVIE_GENRES array (8 primary genres)
+│   ├── constants.ts                      # MOVIE_GENRES array (7 primary genres)
 │   ├── validation.ts                     # Zod schemas + ALLOWED_GENRES (21 total)
 │   └── utils.ts                          # cn() — clsx + tailwind-merge
 │
