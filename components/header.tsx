@@ -87,12 +87,6 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                 <div className="hidden md:flex items-center gap-4">
                     <SignedOut>
                         <Link
-                            href="/docs"
-                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
-                        >
-                            Docs
-                        </Link>
-                        <Link
                             href="/sign-in"
                             className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
                         >
@@ -114,12 +108,6 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                         )}
                     </SignedOut>
                     <SignedIn>
-                        <Link
-                            href="/docs"
-                            className="font-medium text-slate-900 hover:text-slate-700 text-sm underline underline-offset-4 transition-colors"
-                        >
-                            Docs
-                        </Link>
                         <button
                             onClick={() => setIsAddModalOpen(true)}
                             className="text-white font-medium text-sm rounded-xl transition-all duration-200 cursor-pointer bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] -translate-y-0.5 hover:scale-105 active:scale-100 inline-flex h-9 px-4 items-center justify-center"

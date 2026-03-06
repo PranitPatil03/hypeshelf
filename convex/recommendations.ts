@@ -162,3 +162,62 @@ export const toggleStaffPick = mutation({
         });
     },
 });
+
+export const update = mutation({
+    args: {
+        id: v.id("recommendations"),
+        title: v.string(),
+        genre: v.string(),
+        blurb: v.string(),
+        link: v.string(),
+        posterUrl: v.string(),
+        hypeScore: v.number(),
+    },
+    handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) throw new Error("Unauthenticated");
+
+        const rec = await ctx.db.get(args.id);
+        if (!rec) throw new Error("Recommendation not found");
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+            .unique();
+
+        if (rec.userId !== identity.subject && user?.role !== "admin") {
+            throw new Error("Unauthorized: you can only edit your own recommendations");
+        }
+
+        const title = args.title.trim();
+        const blurb = args.blurb.trim();
+
+        if (!title || title.length > MAX_TITLE_LENGTH) {
+            throw new Error(`Title must be between 1 and ${MAX_TITLE_LENGTH} characters`);
+        }
+        if (!blurb || blurb.length > MAX_BLURB_LENGTH) {
+            throw new Error(`Review must be between 1 and ${MAX_BLURB_LENGTH} characters`);
+        }
+        if (!ALLOWED_GENRES.includes(args.genre)) {
+            throw new Error(`Invalid genre: ${args.genre}`);
+        }
+        if (!isSafeUrl(args.link)) {
+            throw new Error("Link must be a valid http/https URL");
+        }
+        if (!isSafeUrl(args.posterUrl)) {
+            throw new Error("Poster URL must be a valid http/https URL");
+        }
+        if (args.hypeScore < 1 || args.hypeScore > 10) {
+            throw new Error("Hype score must be between 1 and 10");
+        }
+
+        await ctx.db.patch(args.id, {
+            title,
+            genre: args.genre,
+            blurb,
+            link: args.link,
+            posterUrl: args.posterUrl,
+            hypeScore: args.hypeScore,
+        });
+    },
+});
