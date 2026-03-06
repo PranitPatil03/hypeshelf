@@ -16,35 +16,21 @@ A community-driven movie recommendations platform where users drop their favorit
 
 ## Features
 
-🎬 **TMDB Movie Search** — Search TMDB to auto-fill title, poster, genre, and year in 2 clicks
-
-⭐ **Hype  Rating System** — 0.5-precision star rating (1–5 stars) mapped to a 1–10 internal hype score
-
-⚡ **Real-time Collaborative Shelf** — Convex WebSocket subscriptions push every change to all clients instantly
-
-✏️ **Full CRUD** — Create, edit, and delete recommendations. Users manage their own; admins manage all
-
-🏆 **Staff Picks Curation** — Admins mark standout recs with a gold Staff Pick badge
-
-🔐 **Role-Based Access Control** — Admin/User roles via server-side email allowlist with zero UI attack surface
-
-🎭 **Genre Filtering** — 21 filterable genres (8 primary + 13 extended from TMDB) with animated pill UI
-
-📜 **Infinite Scroll** — IntersectionObserver triggers automatic page loads with cursor-based pagination
-
-🛡️ **Defense-in-Depth Validation** — Zod schemas on client + independent Convex runtime checks on server
-
-🔑 **Clerk Authentication** — Email + Google + X OAuth with fully custom sign-in/sign-up pages
-
-👤 **DiceBear Avatar Generation** — Notionists-style unique avatars from username seeds
-
-✨ **Motion Animations** — Framer Motion card transitions, hero animations, animated filter pills
-
-🔒 **XSS-Safe URL Handling** — `link` and `posterUrl` validated against `javascript:` injection on both layers
-
-📝 **Manual Entry Fallback** — Movies not in TMDB can be added with fully manual fields
-
-📱 **Responsive Grid Layout** — Mobile-first 1→2→3→4 column grid with adaptive header
+- **TMDB Movie Search** — Search TMDB to auto-fill title, poster, genre, and year in 2 clicks
+- **Hype Rating System** — 0.5-precision star rating (1–5 stars) mapped to a 1–10 internal hype score
+- **Real-time Collaborative Shelf** — Convex WebSocket subscriptions push every change to all clients instantly
+- **Full CRUD** — Create, edit, and delete recommendations. Users manage their own; admins manage all
+- **Staff Picks Curation** — Admins mark standout recs with a gold Staff Pick badge
+- **Role-Based Access Control** — Admin/User roles via server-side email allowlist with zero UI attack surface
+- **Genre Filtering** — 21 filterable genres (8 primary + 13 extended from TMDB) with animated pill UI
+- **Infinite Scroll** — IntersectionObserver triggers automatic page loads with cursor-based pagination
+- **Defense-in-Depth Validation** — Zod schemas on client + independent Convex runtime checks on server
+- **Clerk Authentication** — Email + Google + X OAuth with fully custom sign-in/sign-up pages
+- **DiceBear Avatar Generation** — Notionists-style unique avatars from username seeds
+- **Motion Animations** — Framer Motion card transitions, hero animations, animated filter pills
+- **XSS-Safe URL Handling** — `link` and `posterUrl` validated against `javascript:` injection on both layers
+- **Manual Entry Fallback** — Movies not in TMDB can be added with fully manual fields
+- **Responsive Grid Layout** — Mobile-first 1→2→3→4 column grid with adaptive header
 
 ---
 

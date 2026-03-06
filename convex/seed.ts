@@ -24,6 +24,19 @@ export const runSeed = mutation({
         }))
     },
     handler: async (ctx, args) => {
+        const identity = await ctx.auth.getUserIdentity();
+        if (!identity) {
+            throw new Error("Must be logged in to seed data");
+        }
+
+        const user = await ctx.db
+            .query("users")
+            .withIndex("by_clerkId", (q) => q.eq("clerkId", identity.subject))
+            .unique();
+        if (user?.role !== "admin") {
+            throw new Error("Only admins can seed data");
+        }
+
         if (args.clear) {
             const recs = await ctx.db.query("recommendations").collect();
             for (const r of recs) {
@@ -39,7 +52,13 @@ export const runSeed = mutation({
         }
 
         for (const u of args.users) {
-            await ctx.db.insert("users", u);
+            const existing = await ctx.db
+                .query("users")
+                .withIndex("by_clerkId", (q) => q.eq("clerkId", u.clerkId))
+                .unique();
+            if (!existing) {
+                await ctx.db.insert("users", u);
+            }
         }
 
         for (const r of args.recommendations) {

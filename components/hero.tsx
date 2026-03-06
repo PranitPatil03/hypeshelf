@@ -39,10 +39,10 @@ const HeroContent = () => (
             transition={getTransition(0.4)}
         >
             <Link
-                href="/sign-in"
+                href="/sign-up"
                 className="cursor-pointer w-full text-white font-medium rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[0_4px_10px_rgba(15,23,42,0.4)] inline-flex h-11 px-8 items-center justify-center"
             >
-                sign in to add yours
+                sign up to add yours
             </Link>
         </motion.div>
     </div>

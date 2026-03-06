@@ -2,6 +2,7 @@
 
 import { MoreVertical, Trash2, Star as StarIcon, Pencil, Check, X, Loader } from 'lucide-react';
 import Image from 'next/image';
+import { toast } from 'sonner';
 import { MovieRatingStars } from './shared/movie-rating-stars';
 import { RecAuthorBadge } from './shared/rec-author-badge';
 
@@ -40,12 +41,20 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
     const canEdit = isAuthor || isAdmin;
 
     const handleDelete = async () => {
-        await deleteRec({ id: rec.id as Id<"recommendations"> });
-        setIsDeleteDialogOpen(false);
+        try {
+            await deleteRec({ id: rec.id as Id<"recommendations"> });
+            setIsDeleteDialogOpen(false);
+        } catch {
+            toast.error("Failed to delete recommendation");
+        }
     };
 
     const handleToggleStaffPick = async () => {
-        await toggleStaffPick({ id: rec.id as Id<"recommendations"> });
+        try {
+            await toggleStaffPick({ id: rec.id as Id<"recommendations"> });
+        } catch {
+            toast.error("Failed to toggle staff pick");
+        }
     };
 
     const openEditDialog = () => {
@@ -187,16 +196,22 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
             </div>
 
             <div className="relative z-10 flex flex-col w-full pointer-events-none mt-auto">
-                <a
-                    href={rec.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-fit pointer-events-auto hover:text-emerald-400 transition-colors duration-200"
-                >
+                {rec.link ? (
+                    <a
+                        href={rec.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="w-fit pointer-events-auto hover:text-emerald-400 transition-colors duration-200"
+                    >
+                        <h3 className="font-medium leading-tight tracking-tight text-[20px] sm:text-[22px] md:text-[24px] drop-shadow-md mb-2">
+                            {rec.title}
+                        </h3>
+                    </a>
+                ) : (
                     <h3 className="font-medium leading-tight tracking-tight text-[20px] sm:text-[22px] md:text-[24px] drop-shadow-md mb-2">
                         {rec.title}
                     </h3>
-                </a>
+                )}
 
                 <div className="flex flex-wrap items-center gap-3 mb-3 text-[11px] sm:text-[12px] text-white/70 font-normal tracking-wide">
                     <MovieRatingStars hypeScore={rec.hypeScore} />

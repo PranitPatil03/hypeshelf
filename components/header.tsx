@@ -147,13 +147,15 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                 </div>
 
                 <div className="flex flex-col gap-2 p-5 flex-1">
-                    <Link
-                        href="/docs"
+                    <a
+                        href="https://github.com/PranitPatil03/hypeshelf/tree/main/docs"
+                        target="_blank"
+                        rel="noopener noreferrer"
                         onClick={() => setIsMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 transition-colors underline underline-offset-4"
                     >
                         Docs
-                    </Link>
+                    </a>
                     <SignedOut>
                         <Link
                             href="/sign-in"

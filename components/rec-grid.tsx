@@ -77,12 +77,6 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
     }
 
     let displayRecs = recsQuery;
-    if (mode === 'landing') {
-        const activeGenre = genre || 'All';
-        if (activeGenre !== 'All' && activeGenre !== 'My Recs' && activeGenre !== 'Staff Picks') {
-            displayRecs = displayRecs.filter(r => r.genre === activeGenre);
-        }
-    }
 
     if (displayRecs.length === 0) {
         return (
