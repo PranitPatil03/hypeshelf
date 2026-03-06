@@ -1,10 +1,10 @@
 export const MOVIE_GENRES = [
     'Action',
     'Comedy',
-    'Drama',
     'Sci-Fi',
     'Horror',
     'Thriller',
+    'Drama',
     'Romance',
 ] as const;
 

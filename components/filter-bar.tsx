@@ -2,37 +2,24 @@
 
 import Link from 'next/link';
 import { MOVIE_GENRES, type MovieGenre } from '@/lib/constants';
-import {
-    Film,
-    Bookmark,
-    Award,
-    Swords,
-    Laugh,
-    Drama,
-    Rocket,
-    Skull,
-    ShieldAlert,
-    Heart,
-    type LucideIcon,
-} from 'lucide-react';
 
-const GENRE_ICONS: Record<MovieGenre, LucideIcon> = {
-    Action: Swords,
-    Comedy: Laugh,
-    Drama: Drama,
-    'Sci-Fi': Rocket,
-    Horror: Skull,
-    Thriller: ShieldAlert,
-    Romance: Heart,
+const GENRE_ICONS: Record<MovieGenre, string> = {
+    Action: '/icons/action.png',
+    Comedy: '/icons/comedy.png',
+    Drama: '/icons/darma.png',
+    'Sci-Fi': '/icons/alien.png',
+    Horror: '/icons/ghost.png',
+    Thriller: '/icons/thriller.png',
+    Romance: '/icons/heart.png',
 };
 
 const GENRE_HOVER_ANIM: Record<MovieGenre, string> = {
-    Action: 'group-hover:-rotate-45',
+    Action: 'group-hover:scale-125',
     Comedy: 'group-hover:scale-125',
-    Drama: 'group-hover:-translate-y-0.5',
-    'Sci-Fi': 'group-hover:-translate-y-1 group-hover:rotate-12',
-    Horror: 'group-hover:animate-pulse',
-    Thriller: 'group-hover:scale-110 group-hover:rotate-6',
+    Drama: 'group-hover:scale-125',
+    'Sci-Fi': 'group-hover:scale-125',
+    Horror: 'group-hover:scale-125',
+    Thriller: 'group-hover:scale-125',
     Romance: 'group-hover:scale-125',
 };
 
@@ -55,7 +42,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                     : 'bg-white text-slate-600 hover:bg-slate-50'
                     }`}
             >
-                <Film className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-90" />
+                <img src="/icons/fire.png" alt="All" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                 All Movies
             </Link>
             {showMyRecs && (
@@ -67,7 +54,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                         : 'bg-white text-slate-600 hover:bg-slate-50'
                         }`}
                 >
-                    <Bookmark className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:scale-110" />
+                    <img src="/icons/bookmark.png" alt="My Recs" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                     My Recs
                 </Link>
             )}
@@ -79,11 +66,11 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                     : 'bg-white text-slate-600 hover:bg-slate-50'
                     }`}
             >
-                <Award className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-12 group-hover:scale-110" />
+                <img src="/icons/badge.png" alt="Staff Picks" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                 Staff Picks
             </Link>
             {MOVIE_GENRES.map((genre) => {
-                const Icon = GENRE_ICONS[genre];
+                const iconSrc = GENRE_ICONS[genre];
                 const hoverAnim = GENRE_HOVER_ANIM[genre];
                 return (
                     <Link
@@ -95,7 +82,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                             : 'bg-white text-slate-600 hover:bg-slate-50'
                             }`}
                     >
-                        <Icon className={`w-3.5 h-3.5 transition-transform duration-300 ${hoverAnim}`} />
+                        <img src={iconSrc} alt={genre} className={`w-3.5 h-3.5 transition-transform duration-300 ${hoverAnim}`} />
                         {genre}
                     </Link>
                 );

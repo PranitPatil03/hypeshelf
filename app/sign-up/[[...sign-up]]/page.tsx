@@ -4,12 +4,14 @@ import * as React from 'react';
 import { useSignUp } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 
 export default function SignUpPage() {
     const { isLoaded, signUp, setActive } = useSignUp();
     const [emailAddress, setEmailAddress] = React.useState('');
+    const [fullName, setFullName] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [pendingVerification, setPendingVerification] = React.useState(false);
@@ -23,9 +25,15 @@ export default function SignUpPage() {
         setIsLoading(true);
 
         try {
+            const nameParts = fullName.trim().split(/\s+/);
+            const firstName = nameParts[0] || '';
+            const lastName = nameParts.slice(1).join(' ') || '';
+
             await signUp.create({
                 emailAddress,
                 password,
+                firstName,
+                lastName,
             });
 
             await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
@@ -113,7 +121,8 @@ export default function SignUpPage() {
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
                 <div className="flex flex-col items-center text-center">
                     {/* Logo */}
-                    <Link href="/" className="inline-block mb-2">
+                    <Link href="/" className="inline-flex items-center gap-1.5 mb-2">
+                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
 
@@ -126,6 +135,18 @@ export default function SignUpPage() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div>
+                        <input
+                            id="fullName"
+                            type="text"
+                            required
+                            placeholder="Full name"
+                            className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 placeholder:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                        />
+                    </div>
+
                     <div>
                         <input
                             id="email"
@@ -201,7 +222,7 @@ export default function SignUpPage() {
                     </button>
                 </div>
 
-                <div className="mt-5 flex items-center justify-between text-sm">
+                <div className="mt-5 flex items-center justify-center text-sm">
                     <div className="text-slate-500">
                         Already have an account?{' '}
                         <Link href="/sign-in" className="text-slate-900 font-semibold hover:underline">

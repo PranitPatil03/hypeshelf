@@ -4,6 +4,7 @@ import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 
@@ -53,7 +54,8 @@ export default function SignInPage() {
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
                 <div className="flex flex-col items-center text-center">
                     {/* Logo */}
-                    <Link href="/" className="inline-block mb-2">
+                    <Link href="/" className="inline-flex items-center gap-1.5 mb-2">
+                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
 
@@ -141,10 +143,7 @@ export default function SignInPage() {
                     </button>
                 </div>
 
-                <div className=" flex items-center justify-between text-sm mt-4">
-                    <button type="button" className="cursor-pointer text-slate-600 hover:text-slate-900 font-medium transition-colors">
-                        Forgot password?
-                    </button>
+                <div className="flex items-center justify-center text-sm mt-4">
                     <div className="text-slate-500">
                         Don't have an account?{' '}
                         <Link href="/sign-up" className="text-slate-900 font-semibold hover:underline">

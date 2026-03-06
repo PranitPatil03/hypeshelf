@@ -10,7 +10,8 @@ import { api } from "@/convex/_generated/api";
 import { Id } from "@/convex/_generated/dataModel";
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from './ui/button';
 
 export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: any }) {
     const deleteRec = useMutation(api.recommendations.remove);
@@ -50,16 +51,19 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     </div>
                 )}
 
-                <div className="absolute inset-x-0 bottom-0 h-[85%] bg-gradient-to-t from-[#09090b] via-[#09090b]/80 to-transparent transition-opacity duration-300 opacity-95 group-hover:opacity-100" />
-                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-[#09090b]/20 backdrop-blur-[2px] opacity-20" />
+                <div className="absolute inset-x-0 bottom-0 h-[90%] bg-linear-to-t from-[#09090b] via-[#09090b]/85 to-transparent transition-opacity duration-300 opacity-100" />
             </div>
 
             {rec.isStaffPick && (
-                <div className="absolute -top-1 left-5 z-20 pointer-events-none">
-                    <div className="bg-linear-to-b from-amber-400 to-yellow-500 text-yellow-950 text-[11px] sm:text-[12px] font-black px-4 py-2 rounded-b-xl rounded-t-sm tracking-wide uppercase shadow-lg shadow-yellow-900/30 flex items-center gap-1.5">
-                        <StarIcon className="w-3.5 h-3.5 fill-yellow-950" />
-                        Staff Pick
-                    </div>
+                <div className="absolute top-3 right-3 z-20">
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <img src="/icons/badge.png" alt="Staff Pick" className="w-10 h-10 drop-shadow-lg cursor-pointer" />
+                        </TooltipTrigger>
+                        <TooltipContent side="left" className="text-xs font-semibold">
+                            Staff Pick
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
             )}
 
@@ -134,16 +138,16 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     onClick={() => setIsExpanded(!isExpanded)}
                     className="cursor-pointer pointer-events-auto w-full"
                 >
-                    <p className={`text-[13px] sm:text-[15px] font-semibold text-white/90 leading-relaxed drop-shadow-sm transition-all duration-300 ${isExpanded ? '' : 'line-clamp-2'}`}>
+                    <p className={`text-[14px] sm:text-[16px] font-semibold text-white leading-relaxed drop-shadow-sm transition-all duration-300 ${isExpanded ? '' : 'line-clamp-3'}`}>
                         {rec.blurb}
                     </p>
                 </div>
 
-                <RecAuthorBadge authorName={rec.authorName} />
+                <RecAuthorBadge authorName={rec.authorName} avatarUrl={rec.userAvatar} />
             </div>
 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="sm:max-w-106.25">
                     <DialogHeader>
                         <DialogTitle>Delete Recommendation</DialogTitle>
                         <DialogDescription>

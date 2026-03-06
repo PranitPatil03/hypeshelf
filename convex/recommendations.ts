@@ -105,7 +105,7 @@ export const create = mutation({
         return await ctx.db.insert("recommendations", {
             userId: user.clerkId,
             userName: user.name,
-            userAvatar: `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`,
+            userAvatar: identity.pictureUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${user.name}`,
             title,
             genre: args.genre,
             blurb,
