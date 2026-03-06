@@ -21,6 +21,8 @@ function isSafeUrl(url: string): boolean {
     }
 }
 
+const MAX_PAGE_SIZE = 100;
+
 export const getAll = query({
     args: {
         genre: v.optional(v.string()),
@@ -29,6 +31,11 @@ export const getAll = query({
         paginationOpts: paginationOptsValidator,
     },
     handler: async (ctx, args) => {
+        const paginationOpts = {
+            ...args.paginationOpts,
+            numItems: Math.min(args.paginationOpts.numItems, MAX_PAGE_SIZE),
+        };
+
         if (args.myRecs) {
             const identity = await ctx.auth.getUserIdentity();
             if (!identity) {
@@ -38,22 +45,22 @@ export const getAll = query({
                 .query("recommendations")
                 .withIndex("by_userId", (q) => q.eq("userId", identity.subject))
                 .order("desc")
-                .paginate(args.paginationOpts);
+                .paginate(paginationOpts);
         } else if (args.staffPicks) {
             return await ctx.db
                 .query("recommendations")
                 .withIndex("by_staffPick", (q) => q.eq("isStaffPick", true))
                 .order("desc")
-                .paginate(args.paginationOpts);
+                .paginate(paginationOpts);
         } else if (args.genre && args.genre !== "All") {
             return await ctx.db
                 .query("recommendations")
                 .withIndex("by_genre", (q) => q.eq("genre", args.genre!))
                 .order("desc")
-                .paginate(args.paginationOpts);
+                .paginate(paginationOpts);
         }
 
-        return await ctx.db.query("recommendations").order("desc").paginate(args.paginationOpts);
+        return await ctx.db.query("recommendations").order("desc").paginate(paginationOpts);
     },
 });
 

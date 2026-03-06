@@ -201,5 +201,21 @@ function isSafeUrl(url: string): boolean {
 | **CSRF protection** | Convex mutations are called via authenticated WebSocket, not HTTP forms — CSRF is structurally impossible |
 | **XSS prevention** | React's JSX auto-escaping + no `dangerouslySetInnerHTML` usage + URL protocol validation |
 | **Tab-nabbing prevention** | All external links use `rel="noopener noreferrer"` |
-| **Pagination caps** | `usePaginatedQuery` with `initialNumItems: 50` and `loadMore(25)` — no unbounded queries |
+| **Pagination cap** | Server-side `MAX_PAGE_SIZE = 100` — `Math.min(args.paginationOpts.numItems, MAX_PAGE_SIZE)` caps every query |
 | **Error messages** | Server errors reference error types, not user data — no PII leakage in error responses |
+
+---
+
+## Privacy Controls
+
+While HypeShelf is not a healthcare application, it implements privacy patterns inspired by real-world compliance frameworks:
+
+| Principle | Implementation |
+|---|---|
+| **Minimum necessary access** | Public landing page shows recommendations without ownership info. Authenticated users see ownership only for authorization purposes. |
+| **Data encryption in transit** | All communication uses TLS — HTTPS for API calls, WSS for Convex WebSocket. No plaintext channels. |
+| **Data encryption at rest** | Convex encrypts all stored data at rest. |
+| **Input validation** | Every mutation validates all inputs server-side (length, format, enum membership). Client-side validation mirrors this for UX but is never trusted. |
+| **No PII in logs** | Error messages and console logs reference error types, not user data. Clerk user-IDs are opaque identifiers. |
+| **RBAC enforcement** | Authorization checks happen at the data layer (Convex mutations), not at the API or UI layer, preventing privilege escalation. |
+| **Opaque identifiers** | Clerk `identity.subject` values are non-guessable, non-enumerable strings — not sequential IDs. |

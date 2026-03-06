@@ -1,8 +1,8 @@
 # HypeShelf
 
-**A community-driven movie recommendation platform where users share the films they're hyped about on a real-time, collaborative shelf.**
+**Collect and share the movies you're hyped about.**
 
-Built with Next.js 16, Convex, Clerk, and the TMDB API — not a standard CRUD app with a movie paint job.
+A community-driven movie recommendations platform where users drop their favorite films on a shared shelf. 
 
 ![Next.js](https://img.shields.io/badge/Next.js_16-black?logo=next.js)
 ![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)
@@ -15,35 +15,32 @@ Built with Next.js 16, Convex, Clerk, and the TMDB API — not a standard CRUD a
 ## What Makes This Different
 
 - **Real movie data** — TMDB API integration auto-fills title, poster, genre, and year. Users search for actual movies instead of typing everything manually.
-- **Half-star precision** — 0.5-step star ratings (1–5 stars mapped to 1–10 internal score), not just whole numbers.
-- **True real-time** — Convex WebSocket subscriptions, not polling. Every create/edit/delete pushes to all connected clients instantly.
-- **Full CRUD with RBAC** — Users edit/delete their own recs. Admins edit/delete anyone's. Authorization enforced server-side.
+- **Hype score** — Half-star precision rating (1–5 stars) so users can express exactly how hyped they are.
 - **Generated identity** — Every user gets a unique DiceBear Notionists-style avatar as fallback.
 - **Infinite scroll** — IntersectionObserver + cursor-based pagination, not a "Load More" button.
-- **Server Action for TMDB** — API key never reaches the client bundle.
 - **Independent dual validation** — Zod on client + Convex runtime checks on server. Neither trusts the other.
+- **Full CRUD with RBAC** — Users edit/delete their own recs. Admins edit/delete anyone's. Authorization enforced server-side in every mutation.
+- **True real-time** — Convex WebSocket subscriptions, not polling. Every create/edit/delete pushes to all connected clients instantly.
 
 ---
 
 ## Features
 
-Ordered by impact.
-
-- **TMDB Movie Search** — Search TMDB to auto-fill title, poster, genre, and year in 2 clicks
-- **Half-Star Rating System** — 0.5-precision star input (1–5 stars) mapped to a 1–10 internal hype score
-- **Real-time Collaborative Shelf** — Convex WebSocket subscriptions push every change to all clients instantly
-- **Full CRUD** — Create, edit, and delete recommendations. Users manage their own; admins manage all.
-- **Staff Picks Curation** — Admins mark standout recs with a gold Staff Pick badge
-- **Role-Based Access Control** — Admin/User roles via server-side email allowlist with zero UI attack surface
-- **Genre Filtering** — 21 filterable genres (8 primary + 13 extended from TMDB) with animated pill UI
-- **Cursor-Based Infinite Scroll** — IntersectionObserver triggers automatic page loads
-- **Defense-in-Depth Validation** — Zod schemas on client + independent Convex runtime checks on server
-- **Clerk Authentication** — Email + Google + X OAuth with fully custom sign-in/sign-up pages
-- **DiceBear Avatar Generation** — Notionists-style unique avatars from username seeds
-- **Motion Animations** — Framer Motion card transitions, hero animations, animated filter pills
-- **XSS-Safe URL Handling** — `link` and `posterUrl` validated against `javascript:` injection on both layers
-- **Manual Entry Fallback** — Movies not in TMDB can be added with fully manual fields
-- **Responsive Grid Layout** — Mobile-first 1→2→3→4 column grid with adaptive header
+🎬 **TMDB Movie Search** — Search TMDB to auto-fill title, poster, genre, and year in 2 clicks <br>
+⭐ **Half-Star Rating System** — 0.5-precision star input (1–5 stars) mapped to a 1–10 internal hype score <br>
+⚡ **Real-time Collaborative Shelf** — Convex WebSocket subscriptions push every change to all clients instantly <br>
+✏️ **Full CRUD** — Create, edit, and delete recommendations. Users manage their own; admins manage all. <br>
+🏆 **Staff Picks Curation** — Admins mark standout recs with a gold Staff Pick badge.  <br>
+🔐 **Role-Based Access Control** — Admin/User roles via server-side email allowlist with zero UI attack surface  <br>
+🎭 **Genre Filtering** — 21 filterable genres (8 primary + 13 extended from TMDB) with animated pill UI  <br>
+📜 **Infinite Scroll** — IntersectionObserver triggers automatic page loads  <br>
+🛡️ **Defense-in-Depth Validation** — Zod schemas on client + independent Convex runtime checks on server  <br>
+🔑 **Clerk Authentication** — Email + Google + X OAuth with fully custom sign-in/sign-up pages  <br>
+👤 **DiceBear Avatar Generation** — Notionists-style unique avatars from username seeds  <br>
+✨ **Motion Animations** — Framer Motion card transitions, hero animations, animated filter pills  <br>
+🔒 **XSS-Safe URL Handling** — `link` and `posterUrl` validated against `javascript:` injection on both layers  <br>
+📝 **Manual Entry Fallback** — Movies not in TMDB can be added with fully manual fields  <br>
+📱 **Responsive Grid Layout** — Mobile-first 1→2→3→4 column grid with adaptive header
 
 ---
 
@@ -66,44 +63,25 @@ Ordered by impact.
 
 ## Architecture
 
-> Full architecture details, data flow patterns, and service dependencies: **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**
-
 ![Architecture Diagram](./docs/image.png)
 
----
-
-## Security & RBAC
-
-> Full security documentation: **[docs/SECURITY.md](./docs/SECURITY.md)**
-
-Three-layer auth — no single layer is the boundary:
-
-| Layer | Where | What |
-|---|---|---|
-| Clerk Middleware | Edge (`proxy.ts`) | Blocks unauthenticated `/shelf` access |
-| Server Redirect | `app/shelf/page.tsx` | Second defense if middleware misconfigured |
-| Convex JWT | Every mutation | Independent JWT verification via Clerk JWKS |
-
-**Permission Matrix:**
-
-| Action | Anonymous | User | Admin |
-|---|---|---|---|
-| Browse landing page | Yes | Yes | Yes |
-| View recommendations | No | Yes | Yes |
-| Create recommendation | No | Yes | Yes |
-| Edit own recommendation | No | Yes | Yes |
-| Edit any recommendation | No | No | Yes |
-| Delete own recommendation | No | Yes | Yes |
-| Delete any recommendation | No | No | Yes |
-| Toggle Staff Pick | No | No | Yes |
+> Full architecture details, data flow patterns, and service dependencies: **[docs/ARCHITECTURE.md](./docs/ARCHITECTURE.md)**
 
 ---
 
 ## Getting Started
 
-> Full setup guide with troubleshooting: **[docs/GETTING_STARTED.md](./docs/GETTING_STARTED.md)**
+### Prerequisites
 
-Quick start:
+| Requirement | Version | Purpose |
+|---|---|---|
+| **Node.js** | 18+ | JavaScript runtime |
+| **pnpm** | Latest | Package manager (project uses pnpm workspaces) |
+| **Clerk account** | Free tier | Authentication provider — [clerk.com](https://clerk.com) |
+| **Convex account** | Free tier | Backend-as-a-Service — [convex.dev](https://convex.dev) |
+| **TMDB API key** | Free | Movie metadata — [developer.themoviedb.org](https://developer.themoviedb.org/docs/getting-started) |
+
+### 1. Clone and Install
 
 ```bash
 git clone https://github.com/PranitPatil03/hypeshelf.git
@@ -111,44 +89,207 @@ cd hypeshelf
 pnpm install
 ```
 
-Create `.env.local`:
+### 2. Environment Variables
+
+Create `.env.local` in the project root:
 
 ```env
-NEXT_PUBLIC_CONVEX_URL=<your-convex-url>
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-key>
-CLERK_SECRET_KEY=<your-clerk-secret>
-TMDB_API_KEY=<your-tmdb-key>
+NEXT_PUBLIC_CONVEX_URL=<your-convex-deployment-url>
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=<your-clerk-publishable-key>
+
+CLERK_SECRET_KEY=<your-clerk-secret-key>
+
+TMDB_API_KEY=<your-tmdb-api-key>
 ```
+
+**Where to find each value:**
+
+| Variable | Where to get it |
+|---|---|
+| `CLERK_SECRET_KEY` | Clerk Dashboard → API Keys → Secret key |
+| `TMDB_API_KEY` | TMDB → Settings → API → API Key (v3 auth) |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk Dashboard → API Keys → Publishable key |
+| `NEXT_PUBLIC_CONVEX_URL` | Convex Dashboard → Settings → Deployment URL (created after first `npx convex dev`) |
+
+### 3. Set Up Convex
+
+Start the Convex development server (deploys schema + functions):
 
 ```bash
-npx convex dev                    # Start Convex (deploys schema + functions)
-npx convex env set ADMIN_EMAILS "your-email@example.com"
-npx convex env set CLERK_JWT_ISSUER_DOMAIN "https://<domain>.clerk.accounts.dev"
-npx tsx scripts/seed.ts           # Optional: seed 220+ recs
-pnpm dev                          # Start Next.js
+npx convex dev
 ```
 
+Set admin email(s) so your account gets the `admin` role on login:
+
+```bash
+npx convex env set ADMIN_EMAILS "your-email@example.com"
+```
+
+Set the Clerk JWT issuer domain (required for Convex to verify Clerk tokens):
+
+```bash
+npx convex env set CLERK_JWT_ISSUER_DOMAIN "https://<your-clerk-domain>.clerk.accounts.dev"
+```
+
+### 4. Configure Clerk
+
+1. Go to [clerk.com](https://clerk.com) and create a new application
+2. **Enable sign-in methods:** Email/Password, Google OAuth, X (Twitter) OAuth
+3. **Create JWT template for Convex:**
+   - Clerk Dashboard → JWT Templates → New Template → Select "Convex"
+   - Name it `convex`
+   - Copy the **Issuer** URL — this is your `CLERK_JWT_ISSUER_DOMAIN`
+4. **Verify** `convex/auth.config.ts` matches your Clerk issuer domain
+
+### 5. Seed the Database (Optional)
+
+Populate the database with ~220 movie recommendations across all 21 genres:
+
+```bash
+npx tsx scripts/seed.ts
+```
+
+This fetches real movie data from TMDB, generates random user names, and inserts ~220 recs with real poster images.
+
+### 6. Run the Dev Server
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000).
+
+| Page | URL | Access |
+|---|---|---|
+| Landing page | `/` | Public — hero section + limited recommendation grid |
+| Shelf dashboard | `/shelf` | Protected — full grid with filters, infinite scroll, add/edit/delete |
+| Sign in | `/sign-in` | Public — custom Clerk sign-in page |
+| Sign up | `/sign-up` | Public — custom Clerk sign-up page |
+
+### Verify Everything Works
+
+1. **Landing page loads** — hero section and recommendation cards (if seeded)
+2. **Sign up** — create an account, redirected to `/shelf`
+3. **Admin role** — if your email matches `ADMIN_EMAILS`, you see Staff Pick toggle and delete on all cards
+4. **Add a rec** — click "+ add your recs", search TMDB, submit
+5. **Real-time** — open two tabs at `/shelf`, add a rec in one — it appears in the other instantly
 ---
 
 ## Project Structure
 
-> Full annotated tree: **[docs/PROJECT_STRUCTURE.md](./docs/PROJECT_STRUCTURE.md)**
-
 ```
 hypeshelf/
-├── app/                    # Next.js pages (landing, shelf, auth, SSO callback)
-│   └── actions/tmdb.ts     # TMDB Server Action
-├── components/             # UI components (RecGrid, RecCard, FilterBar, AddRecModal, etc.)
-│   ├── ui/                 # shadcn/ui primitives
-│   ├── ui-custom/          # Half-star display, author badge
-│   └── animate-ui/         # Motion-animated icons
-├── convex/                 # Backend: schema, recommendations CRUD, users, auth config
-├── lib/                    # Constants, Zod validation schemas, utilities
-├── hooks/                  # IntersectionObserver hook
-├── docs/                   # Detailed documentation (markdown)
-├── scripts/seed.ts         # Database seeding script
-└── proxy.ts                # Clerk middleware (route protection)
+│
+├── app/                                  # Next.js 16 App Router pages
+│   ├── layout.tsx                        # Root layout — ConvexClientProvider wrapping
+│   │                                     #   (ClerkProvider + ConvexProvider + Sonner toasts)
+│   ├── page.tsx                          # Public landing page — Hero + RecGrid
+│   ├── globals.css                       # Tailwind CSS v4 imports + custom CSS variables
+│   │
+│   ├── shelf/
+│   │   └── page.tsx                      # Protected dashboard — full RecGrid with
+│   │                                     #   filters, infinite scroll, add/edit/delete
+│   │
+│   ├── sign-in/[[...sign-in]]/
+│   │   └── page.tsx                      # Custom Clerk sign-in (branded UI, OAuth)
+│   │
+│   ├── sign-up/[[...sign-up]]/
+│   │   └── page.tsx                      # Custom Clerk sign-up (full name + OAuth)
+│   │
+│   ├── sso-callback/
+│   │   └── page.tsx                      # OAuth redirect handler
+│   │
+│   └── actions/
+│       └── tmdb.ts                       # Server Action ('use server') — TMDB search
+│                                         #   API key never reaches client
+│
+├── components/                           # React components
+│   ├── header.tsx                        # Auth-aware navbar, mobile hamburger
+│   ├── hero.tsx                          # Animated landing hero (motion/react)
+│   ├── rec-grid.tsx                      # Infinite scroll grid (usePaginatedQuery)
+│   ├── rec-card.tsx                      # Card: poster, stars, badges, edit/delete
+│   ├── filter-bar.tsx                    # Animated genre pills + Staff Picks + My Recs
+│   ├── add-rec-modal.tsx                 # 2-step: TMDB search → Zod-validated form
+│   ├── convex-client-provider.tsx        # ClerkProvider + ConvexProvider + users.store
+│   │
+│   ├── ui/                               # shadcn/ui primitives
+│   │   ├── button.tsx                    # Variants: default, destructive, outline, ghost
+│   │   ├── dialog.tsx                    # Modal (Radix UI)
+│   │   ├── form.tsx                      # react-hook-form integration
+│   │   ├── input.tsx, label.tsx          # Form inputs
+│   │   ├── select.tsx                    # Dropdown select
+│   │   ├── slider.tsx                    # Range slider
+│   │   ├── sonner.tsx                    # Toast notifications
+│   │   └── textarea.tsx                  # Multi-line text input
+│   │
+│   ├── ui-custom/                        # Custom UI components
+│   │   ├── movie-rating-stars.tsx        # Read-only half-star SVG display
+│   │   └── rec-author-badge.tsx          # Author avatar + name (DiceBear fallback)
+│   │
+│   └── animate-ui/                       # Motion-animated icons
+│       ├── icons/                        # activity, axe, badge-check, clapperboard,
+│       │                                 #   compass, heart, moon-star, orbit,
+│       │                                 #   party-popper, sparkles, star
+│       └── primitives/animate/slot.tsx   # Animation slot primitive
+│
+├── convex/                               # Convex backend
+│   ├── schema.ts                         # DB schema — recommendations (10 fields,
+│   │                                     #   3 indexes) + users (4 fields, 1 index)
+│   ├── recommendations.ts               # CRUD + RBAC mutations + paginated query
+│   ├── users.ts                          # Upsert on login + role from ADMIN_EMAILS
+│   ├── auth.config.ts                    # Clerk JWT issuer configuration
+│   ├── seed.ts                           # Bulk insert mutation for seeding
+│   └── _generated/                       # Auto-generated typed API (do not edit)
+│
+├── lib/                                  # Shared utilities
+│   ├── constants.ts                      # MOVIE_GENRES array (8 primary genres)
+│   ├── validation.ts                     # Zod schemas + ALLOWED_GENRES (21 total)
+│   └── utils.ts                          # cn() — clsx + tailwind-merge
+│
+├── hooks/
+│   └── use-is-in-view.tsx                # IntersectionObserver hook (infinite scroll)
+│
+├── docs/                                 # Extended documentation
+│   ├── ARCHITECTURE.md                   # System diagram, data flow patterns
+│   ├── BACKEND.md                        # Schema, Convex functions, TMDB integration
+│   ├── SECURITY.md                       # Auth layers, RBAC, validation, XSS
+│   ├── API.md                            # Full API reference
+│   ├── COMPONENTS.md                     # UI component reference
+│   ├── DESIGN_DECISIONS.md               # 8 architectural decisions with reasoning
+│   ├── GETTING_STARTED.md                # Extended setup guide
+│   ├── PROJECT_STRUCTURE.md              # Full annotated tree
+│   └── image.png                         # Architecture diagram
+│
+├── scripts/seed.ts                       # CLI: fetch TMDB data + insert ~220 recs
+├── proxy.ts                              # Clerk middleware (route protection)
+├── next.config.ts                        # Next.js configuration
+├── tsconfig.json                         # TypeScript (strict)
+├── postcss.config.mjs                    # PostCSS + Tailwind CSS v4
+├── eslint.config.mjs                     # ESLint configuration
+├── components.json                       # shadcn/ui configuration
+└── package.json                          # Dependencies and scripts
 ```
+
+---
+
+## Security & Privacy
+
+🔐 **Three-Layer Authentication** — Clerk middleware blocks unauthenticated requests at the edge, each protected page independently verifies auth state, and every Convex mutation re-verifies the JWT against Clerk's JWKS endpoint. No single layer is the boundary.
+
+🛡️ **Server-Side RBAC** — Roles are assigned from a server-only `ADMIN_EMAILS` env var and stored in the database. Every mutation reads the role from the DB — never from client state, headers, or cookies. Privilege escalation from the client is structurally impossible.
+
+✅ **Dual Input Validation** — Zod validates on the client for instant UX feedback. Convex mutations validate independently on the server as the security boundary. Bypassing the React form still hits full server-side checks.
+
+🔒 **XSS Prevention** — React JSX auto-escapes all output. `isSafeUrl()` blocks `javascript:`, `data:`, and `vbscript:` URL schemes on both layers. Zero uses of `dangerouslySetInnerHTML`. External links use `rel="noopener noreferrer"`.
+
+🔑 **Transport & API Key Security** — All communication over TLS (WSS for Convex, HTTPS for Clerk/TMDB). TMDB API key is server-only via Server Action (`'use server'`). No secrets reach the client.
+
+🚫 **CSRF Protection** — Zero HTML form submissions. All mutations go through Convex's authenticated WebSocket — CSRF is structurally impossible.
+
+📄 **Pagination Cap** — Server enforces `MAX_PAGE_SIZE = 100` on all queries, preventing data exfiltration via oversized page requests.
+
+> Full details — auth layers, RBAC matrix, validation rules, XSS prevention, API key protection, and more: **[docs/SECURITY.md](./docs/SECURITY.md)**
 
 ---
 
@@ -156,12 +297,11 @@ hypeshelf/
 
 | Document | What's Inside |
 |---|---|
-| [**Getting Started**](./docs/GETTING_STARTED.md) | Prerequisites, env vars, Clerk/Convex setup, seeding, troubleshooting |
+| [**Getting Started**](./docs/GETTING_STARTED.md) | Extended setup guide with prerequisites, env vars, Clerk/Convex setup, seeding, troubleshooting |
 | [**Architecture**](./docs/ARCHITECTURE.md) | System diagram, 6 data flow patterns, real-time model, service dependencies |
 | [**Backend**](./docs/BACKEND.md) | Database schema, Convex functions, pagination, TMDB integration, seed data |
-| [**Security**](./docs/SECURITY.md) | Three-layer auth, RBAC, dual validation, XSS prevention, API key protection |
+| [**Security**](./docs/SECURITY.md) | Full security documentation — auth layers, RBAC, validation, XSS prevention |
 | [**API Reference**](./docs/API.md) | Every query/mutation — args, returns, auth, authorization logic |
 | [**Components**](./docs/COMPONENTS.md) | UI component reference — props, behavior, composition |
 | [**Design Decisions**](./docs/DESIGN_DECISIONS.md) | 8 architectural decisions with reasoning and trade-offs |
-| [**Project Structure**](./docs/PROJECT_STRUCTURE.md) | Full annotated directory tree |
-| [**Excalidraw Diagram**](./docs/architecture.excalidraw) | Interactive architecture diagram — open at [excalidraw.com](https://excalidraw.com) |
+| [**Project Structure**](./docs/PROJECT_STRUCTURE.md) | Full annotated directory tree with detailed file descriptions |
