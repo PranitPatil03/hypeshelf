@@ -51,10 +51,10 @@ npx convex env set ADMIN_EMAILS "admin1@example.com,admin2@example.com"
 
 ### Permission Matrix
 
-| Action | Anonymous | User | Admin |
+| Action | Anonymous (not logged in) | User | Admin |
 |---|---|---|---|
 | Browse public shelf | ✅ | ✅ | ✅ |
-| View all recommendations | ❌ | ✅ | ✅ |
+| View all recommendations | ✅ | ✅ | ✅ |
 | Create recommendation | ❌ | ✅ | ✅ |
 | Edit own recommendation | ❌ | ✅ | ✅ |
 | Edit any recommendation | ❌ | ❌ | ✅ |
