@@ -35,7 +35,11 @@ export default function SignInPage() {
                 await setActive({ session: result.createdSessionId });
                 window.location.href = '/shelf';
             } else {
-                // Additional verification required - Clerk sends the code automatically
+                // Additional verification required - prepare and send the email code
+                // @ts-ignore - Clerk SDK types may be incomplete
+                await result.prepareFirstFactorVerification({
+                    strategy: 'email_code',
+                });
                 setPendingVerification(true);
             }
         } catch (err: any) {
