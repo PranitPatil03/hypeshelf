@@ -85,7 +85,7 @@ export const create = mutation({
         const recentCount = await ctx.db.query('recommendations')
             .withIndex('by_userId', q => q.eq('userId', identity.subject))
             .filter(q => q.gte(q.field('_creationTime'), Date.now() - 3600000))
-            .collect();
+            .take(21);
 
         if (recentCount.length >= 20) {
             throw new Error('Rate limit: max 20 recommendations per hour');
@@ -197,6 +197,15 @@ export const update = mutation({
 
         const title = args.title.trim();
         const blurb = args.blurb.trim();
+
+        const recentEditsCount = await ctx.db.query('recommendations')
+            .withIndex('by_userId', q => q.eq('userId', identity.subject))
+            .filter(q => q.gte(q.field('_creationTime'), Date.now() - 3600000))
+            .take(21);
+
+        if (recentEditsCount.length >= 20) {
+            throw new Error('Rate limit: max 20 recommendations per hour');
+        }
 
         if (!title || title.length > MAX_TITLE_LENGTH) {
             throw new Error(`Title must be between 1 and ${MAX_TITLE_LENGTH} characters`);

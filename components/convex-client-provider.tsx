@@ -13,14 +13,19 @@ function ConvexSyncUser({ children }: { children: ReactNode }) {
     const isStoringUser = useRef(false);
 
     useEffect(() => {
+        if (!isAuthenticated) {
+            hasStoredUser.current = false;
+        }
+
         if (isAuthenticated && !hasStoredUser.current && !isStoringUser.current) {
             isStoringUser.current = true;
             storeUser()
                 .then(() => {
                     hasStoredUser.current = true;
                 })
-                .catch(() => {
-                    // Ignored intentionally
+                .catch((err) => {
+                    console.error("Failed to sync user:", err);
+                    hasStoredUser.current = false;
                 })
                 .finally(() => {
                     isStoringUser.current = false;

@@ -38,7 +38,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
             </Link>
             {showMyRecs && (
                 <Link
-                    href={`${basePath}?genre=My Recs`}
+                    href={`${basePath}?genre=${encodeURIComponent('My Recs')}`}
                     scroll={false}
                     className={`group flex items-center gap-1.5 px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === 'My Recs'
                         ? 'bg-slate-900 text-white'
@@ -50,7 +50,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                 </Link>
             )}
             <Link
-                href={`${basePath}?genre=Staff Picks`}
+                href={`${basePath}?genre=${encodeURIComponent('Staff Picks')}`}
                 scroll={false}
                 className={`group flex items-center gap-1.5 px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === 'Staff Picks'
                     ? 'bg-slate-900 text-white'
@@ -65,7 +65,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                 return (
                     <Link
                         key={genre}
-                        href={`${basePath}?genre=${genre}`}
+                        href={`${basePath}?genre=${encodeURIComponent(genre)}`}
                         scroll={false}
                         className={`group flex items-center gap-1.5 px-4 py-1.5 rounded text-sm font-normal shadow-sm whitespace-nowrap border border-slate-100 transition-colors ${activeGenre === genre
                             ? 'bg-slate-900 text-white'

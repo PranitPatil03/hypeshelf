@@ -41,7 +41,7 @@ export function MovieSearch({ onSelect }: MovieSearchProps) {
         const results = await searchMovies(searchQuery);
         setSearchResults(results);
       } catch (_) {
-        // intentionally ignoring error
+        setSearchResults([]);
       } finally {
         setIsSearching(false);
         setHasSearched(true);
@@ -52,9 +52,12 @@ export function MovieSearch({ onSelect }: MovieSearchProps) {
   }, [searchQuery]);
 
   const handleManualAdd = () => {
+    const trimmed = searchQuery.trim();
+    if (!trimmed) return;
+
     onSelect({
       id: 0,
-      title: searchQuery,
+      title: trimmed,
       release_date: '',
       poster_path: null,
       genre: 'Other',
