@@ -11,6 +11,7 @@ export default function SignUpPage() {
     const { isLoaded, signUp, setActive } = useSignUp();
     const [emailAddress, setEmailAddress] = React.useState('');
     const [fullName, setFullName] = React.useState('');
+    const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [pendingVerification, setPendingVerification] = React.useState(false);
@@ -29,6 +30,7 @@ export default function SignUpPage() {
             const lastName = nameParts.slice(1).join(' ') || '';
 
             await signUp.create({
+                username,
                 emailAddress,
                 password,
                 firstName,
@@ -147,6 +149,18 @@ export default function SignUpPage() {
                             className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 placeholder:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
                             value={fullName}
                             onChange={(e) => setFullName(e.target.value)}
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            id="username"
+                            type="text"
+                            required
+                            placeholder="Username"
+                            className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 placeholder:text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:border-transparent transition-all"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
 
