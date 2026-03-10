@@ -197,6 +197,7 @@ export default function SignUpPage() {
                     </div>
 
                     <button
+                    
                         type="submit"
                         disabled={isLoading || !isLoaded}
                         className="flex items-center justify-center cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
