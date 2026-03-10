@@ -38,7 +38,8 @@ export default function SignUpPage() {
             await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
             setPendingVerification(true);
         } catch (err: any) {
-            toast.error(err.errors?.[0]?.message || 'An error occurred during sign up');
+            console.error(err);
+            toast.error(err.errors?.[0]?.message || err.message || 'An error occurred during sign up');
         } finally {
             setIsLoading(false);
         }
@@ -51,7 +52,7 @@ export default function SignUpPage() {
 
         try {
             const completeSignUp = await signUp.attemptEmailAddressVerification({
-                code,
+                code: code.trim(),
             });
 
             if (completeSignUp.status === 'complete') {
@@ -61,7 +62,8 @@ export default function SignUpPage() {
                 toast.error('Verification failed. Please try again.');
             }
         } catch (err: any) {
-            toast.error(err.errors?.[0]?.message || 'Invalid verification code');
+            console.error(err);
+            toast.error(err.errors?.[0]?.message || err.message || 'Invalid verification code');
         } finally {
             setIsLoading(false);
         }
@@ -90,6 +92,7 @@ export default function SignUpPage() {
                     </div>
 
                     <form onSubmit={onPressVerify} className="space-y-4">
+                        <div id="clerk-captcha"></div>
                         <div>
                             <input
                                 id="code"
@@ -134,6 +137,7 @@ export default function SignUpPage() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div id="clerk-captcha"></div>
                     <div>
                         <input
                             id="fullName"

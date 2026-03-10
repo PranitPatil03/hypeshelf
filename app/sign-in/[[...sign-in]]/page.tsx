@@ -34,7 +34,8 @@ export default function SignInPage() {
                 toast.error('Additional verification required.');
             }
         } catch (err: any) {
-            toast.error(err.errors?.[0]?.message || 'An error occurred during sign in');
+            console.error(err);
+            toast.error(err.errors?.[0]?.message || err.message || 'An error occurred during sign in');
         } finally {
             setIsLoading(false);
         }
@@ -68,6 +69,7 @@ export default function SignInPage() {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <div id="clerk-captcha"></div>
                     <div>
                         <input
                             id="email"
