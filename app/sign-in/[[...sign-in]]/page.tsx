@@ -6,7 +6,6 @@ import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { toast } from 'sonner';
 import { Eye, EyeOff, Loader } from 'lucide-react';
 
@@ -16,8 +15,6 @@ export default function SignInPage() {
     const [password, setPassword] = React.useState('');
     const [showPassword, setShowPassword] = React.useState(false);
     const [isLoading, setIsLoading] = React.useState(false);
-    const [pendingVerification, setPendingVerification] = React.useState(false);
-    const [code, setCode] = React.useState('');
     const router = useRouter();
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -26,50 +23,35 @@ export default function SignInPage() {
         setIsLoading(true);
 
         try {
+            // Explicitly set the strategy to password to avoid Clerk falling back to needs_first_factor
             const result = await signIn.create({
-                identifier: emailAddress,
+                strategy: 'password',
+                identifier: emailAddress.trim(),
                 password,
             });
 
             if (result.status === 'complete') {
                 await setActive({ session: result.createdSessionId });
                 window.location.href = '/shelf';
-            } else {
-                // Additional verification required - prepare and send the email code
-                // @ts-ignore - Clerk SDK types may be incomplete
-                await result.prepareFirstFactorVerification({
-                    strategy: 'email_code',
-                });
-                setPendingVerification(true);
+            } else if (result.status === 'needs_first_factor') {
+                // This will still catch if the password strategy is completely unsupported
+                toast.error('Additional verification required. Please contact support or try signing up again.');
             }
         } catch (err: any) {
             console.error(err);
-            toast.error(err.errors?.[0]?.message || err.message || 'An error occurred during sign in');
-        } finally {
-            setIsLoading(false);
-        }
-    };
+            const errorMessage = err.errors?.[0]?.message || err.message || 'An error occurred during sign in';
+            const errorCode = err.errors?.[0]?.code || '';
 
-    const onPressVerify = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!isLoaded) return;
-        setIsLoading(true);
-
-        try {
-            // @ts-ignore - Clerk SDK types may be incomplete
-            const completeSignIn = await signIn.firstFactorVerification.attempt({
-                code: code.trim(),
-            });
-
-            if (completeSignIn.status === 'complete') {
-                await setActive({ session: completeSignIn.createdSessionId });
-                window.location.href = '/shelf';
+            // Provide more helpful error messages
+            if (errorCode === 'strategy_for_user_invalid' || errorMessage.includes('allowed')) {
+                toast.error('Password sign in is not enabled for this account. Try another method.');
+            } else if (errorMessage.includes('email_address') || errorMessage.includes('identifier')) {
+                toast.error('Invalid email address. Please check and try again.');
+            } else if (errorMessage.includes('password') || errorMessage.includes('credentials') || errorMessage.includes('form_password_incorrect')) {
+                toast.error('Invalid email or password. Please try again.');
             } else {
-                toast.error('Verification failed. Please try again.');
+                toast.error(errorMessage);
             }
-        } catch (err: any) {
-            console.error(err);
-            toast.error(err.errors?.[0]?.message || err.message || 'Invalid verification code');
         } finally {
             setIsLoading(false);
         }
@@ -83,50 +65,6 @@ export default function SignInPage() {
             redirectUrlComplete: '/shelf',
         });
     };
-
-    if (pendingVerification) {
-        return (
-            <div className="flex min-h-screen bg-white font-sans items-center justify-center">
-                <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
-                    <div className="flex flex-col items-center text-center">
-                        <Link href="/" className="inline-flex items-center gap-1.5 mb-2">
-                            <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
-                            <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
-                        </Link>
-                        <h1 className="text-[28px] font-semibold text-slate-900 tracking-tight mb-2">
-                            Verify your identity
-                        </h1>
-                        <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-sm">
-                            We've sent a verification code to <span className="font-semibold text-slate-800">{emailAddress}</span>.
-                        </p>
-                    </div>
-
-                    <form onSubmit={onPressVerify} className="space-y-4">
-                        <div id="clerk-captcha"></div>
-                        <div>
-                            <input
-                                id="code"
-                                type="text"
-                                required
-                                placeholder="Enter verification code"
-                                className="w-full h-12 px-4 rounded-lg border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all font-medium tracking-widest text-lg"
-                                value={code}
-                                onChange={(e) => setCode(e.target.value)}
-                            />
-                        </div>
-
-                        <button
-                            type="submit"
-                            disabled={isLoading || !isLoaded}
-                            className="flex items-center justify-center cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"
-                        >
-                            {isLoading ? <><Loader className="w-5 h-5 mr-2 animate-spin" /> Verifying...</> : 'Verify'}
-                        </button>
-                    </form>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="flex min-h-screen bg-white font-sans items-center justify-center">
