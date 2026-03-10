@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import { useSignIn } from '@clerk/nextjs';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -23,7 +24,6 @@ export default function SignInPage() {
         setIsLoading(true);
 
         try {
-            // Explicitly set the strategy to password to avoid Clerk falling back to needs_first_factor
             const result = await signIn.create({
                 strategy: 'password',
                 identifier: emailAddress.trim(),
@@ -32,17 +32,15 @@ export default function SignInPage() {
 
             if (result.status === 'complete') {
                 await setActive({ session: result.createdSessionId });
-                window.location.href = '/shelf';
+                router.push('/shelf');
             } else if (result.status === 'needs_first_factor') {
-                // This will still catch if the password strategy is completely unsupported
                 toast.error('Additional verification required. Please contact support or try signing up again.');
             }
-        } catch (err: any) {
-            console.error(err);
-            const errorMessage = err.errors?.[0]?.message || err.message || 'An error occurred during sign in';
-            const errorCode = err.errors?.[0]?.code || '';
+        } catch (err) {
+            const error = err as { errors?: Array<{ message: string; code?: string }>; message?: string };
+            const errorMessage = error.errors?.[0]?.message || error.message || 'An error occurred during sign in';
+            const errorCode = error.errors?.[0]?.code || '';
 
-            // Provide more helpful error messages
             if (errorCode === 'strategy_for_user_invalid' || errorMessage.includes('allowed')) {
                 toast.error('Password sign in is not enabled for this account. Try another method.');
             } else if (errorMessage.includes('email_address') || errorMessage.includes('identifier')) {
@@ -70,9 +68,8 @@ export default function SignInPage() {
         <div className="flex min-h-screen bg-white font-sans items-center justify-center">
             <div className="w-full px-4 sm:px-6 py-12 max-w-[420px]">
                 <div className="flex flex-col items-center text-center">
-                    {/* Logo */}
                     <Link href="/" className="inline-flex items-center gap-1.5 mb-2">
-                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
+                        <Image src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
 
@@ -163,7 +160,7 @@ export default function SignInPage() {
 
                 <div className="flex items-center justify-center text-sm mt-4">
                     <div className="text-slate-500">
-                        Don't have an account?{' '}
+                        Don&apos;t have an account?{' '}
                         <Link href="/sign-up" className="text-slate-900 font-semibold hover:underline">
                             Sign up
                         </Link>

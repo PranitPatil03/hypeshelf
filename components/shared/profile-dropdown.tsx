@@ -2,6 +2,7 @@
 
 import { useUser, useClerk } from '@clerk/nextjs';
 import { Loader } from 'lucide-react';
+import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
 import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
@@ -37,7 +38,7 @@ export function ProfileDropdown() {
         onClick={() => setIsOpen(!isOpen)}
         className="w-9 h-9 rounded-full overflow-hidden border shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900 transition-transform active:scale-95 cursor-pointer"
       >
-        <img src={avatarUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
+        <Image src={avatarUrl} alt={user.fullName || 'User'} width={36} height={36} className="w-full h-full object-cover" />
       </button>
 
       {isOpen && (
@@ -45,7 +46,7 @@ export function ProfileDropdown() {
           <div className="p-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-200 shadow-sm shrink-0">
-                <img src={avatarUrl} alt={user.fullName || 'User'} className="w-full h-full object-cover" />
+                <Image src={avatarUrl} alt={user.fullName || 'User'} width={40} height={40} className="w-full h-full object-cover" />
               </div>
               <div className="flex flex-col overflow-hidden">
                 <div className="flex items-center gap-1.5">
@@ -73,7 +74,7 @@ export function ProfileDropdown() {
               }}
               className="w-full flex items-center gap-2 px-3 py-2.5 text-sm font-medium text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
             >
-              <img src="/icons/setting.png" alt="" className="w-4 h-4" />
+              <Image src="/icons/setting.png" alt="" width={16} height={16} className="w-4 h-4" />
               Manage account
             </button>
             <button
@@ -87,7 +88,7 @@ export function ProfileDropdown() {
               {isSigningOut ? (
                 <Loader className="w-4 h-4 text-slate-500 animate-spin" />
               ) : (
-                <img src="/icons/logout.png" alt="" className="w-4 h-4" />
+                <Image src="/icons/logout.png" alt="" width={16} height={16} className="w-4 h-4" />
               )}
               {isSigningOut ? 'Signing out...' : 'Sign out'}
             </button>

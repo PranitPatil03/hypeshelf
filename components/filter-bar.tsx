@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { MOVIE_GENRES, type MovieGenre } from '@/lib/constants';
 
 const GENRE_ICONS: Record<MovieGenre, string> = {
@@ -32,7 +33,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                     : 'bg-white text-slate-600 hover:bg-slate-50'
                     }`}
             >
-                <img src="/icons/fire.png" alt="All" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
+                <Image src="/icons/fire.png" alt="All" width={14} height={14} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                 All Movies
             </Link>
             {showMyRecs && (
@@ -44,7 +45,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                         : 'bg-white text-slate-600 hover:bg-slate-50'
                         }`}
                 >
-                    <img src="/icons/bookmark.png" alt="My Recs" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
+                    <Image src="/icons/bookmark.png" alt="My Recs" width={14} height={14} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                     My Recs
                 </Link>
             )}
@@ -56,7 +57,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                     : 'bg-white text-slate-600 hover:bg-slate-50'
                     }`}
             >
-                <img src="/icons/badge.png" alt="Staff Picks" className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
+                <Image src="/icons/badge.png" alt="Staff Picks" width={14} height={14} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                 Staff Picks
             </Link>
             {MOVIE_GENRES.map((genre) => {
@@ -71,7 +72,7 @@ export default function FilterBar({ activeGenre, basePath, className = '', showM
                             : 'bg-white text-slate-600 hover:bg-slate-50'
                             }`}
                     >
-                        <img src={iconSrc} alt={genre} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
+                        <Image src={iconSrc} alt={genre} width={14} height={14} className="w-3.5 h-3.5 transition-transform duration-300 group-hover:scale-125" />
                         {genre}
                     </Link>
                 );

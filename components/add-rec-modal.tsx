@@ -48,7 +48,7 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
         setIsSubmitting(true);
         setError('');
 
-        const isManualEntry = selectedMovie.id > 100000000;
+        const isManualEntry = selectedMovie.isManual;
 
         const posterUrl = isManualEntry
             ? customPosterUrl
@@ -78,8 +78,9 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
         try {
             await createRec(validation.data);
             onClose();
-        } catch (err: any) {
-            setError(err.message || 'Failed to add recommendation.');
+        } catch (err) {
+            const error = err as { message?: string };
+            setError(error.message || 'Failed to add recommendation.');
         } finally {
             setIsSubmitting(false);
         }
@@ -132,8 +133,8 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
                                                 fill
                                                 className="object-cover"
                                             />
-                                        ) : (selectedMovie.id > 100000000 && customPosterUrl) ? (
-                                            <img src={customPosterUrl} alt={selectedMovie.title} className="w-full h-full object-cover" />
+                                        ) : (selectedMovie.isManual && customPosterUrl) ? (
+                                            <Image src={customPosterUrl} alt={selectedMovie.title} fill className="object-cover" />
                                         ) : (
                                             <div className="absolute inset-0 flex items-center justify-center bg-slate-800 text-white/40 text-[10px] font-bold text-center p-1.5">
                                                 No Poster
@@ -175,7 +176,7 @@ export function AddRecModal({ isOpen, onClose }: AddRecModalProps) {
                                 />
                             </div>
 
-                            {selectedMovie.id > 100000000 && (
+                            {selectedMovie.isManual && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}

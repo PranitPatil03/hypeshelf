@@ -64,15 +64,12 @@ const genreMap: Record<number, string> = {
 };
 
 async function seed() {
-    console.log("Starting Seeding Process...");
-
-    console.log("Fetching existing users from Clerk...");
     const clerkRes = await fetch("https://api.clerk.com/v1/users?limit=100", {
         headers: { "Authorization": `Bearer ${CLERK_SECRET_KEY}` }
     });
     const clerkUsers = await clerkRes.json();
 
-    const existingUsers = clerkUsers.map((u: any) => {
+    const existingUsers = clerkUsers.map((u: { id: string; first_name?: string; last_name?: string; email_addresses?: { email_address: string }[] }) => {
         const name = [u.first_name, u.last_name].filter(Boolean).join(" ") || "Anonymous";
         const email = u.email_addresses?.[0]?.email_address || "";
         return {
@@ -86,7 +83,6 @@ async function seed() {
     if (existingUsers.length === 0) {
         throw new Error("No existing Clerk users found!");
     }
-    console.log(`Found ${existingUsers.length} existing users.`);
 
     const genreQueries: Record<string, number> = {
         Action: 28, Comedy: 35, Drama: 18, "Sci-Fi": 878,
@@ -95,8 +91,7 @@ async function seed() {
         Fantasy: 14,
     };
 
-    console.log("Fetching movies by genre from TMDB...");
-    let allMovies: any[] = [];
+    let allMovies: { id: number, title: string, overview: string, _forcedGenre?: string, genre_ids?: number[], poster_path?: string | null }[] = [];
     const seen = new Set<number>();
 
     for (const [genreName, genreId] of Object.entries(genreQueries)) {
@@ -114,7 +109,6 @@ async function seed() {
                 }
             }
         }
-        console.log(`Fetched ${genreName}: ${allMovies.length} total unique movies so far`);
     }
 
     allMovies.sort(() => Math.random() - 0.5);
@@ -141,9 +135,6 @@ async function seed() {
         };
     });
 
-    console.log(`Prepared ${recommendations.length} recommendations!`);
-
-    console.log("Seeding to Convex (First batch clears old data)...");
     const chunkSize = 50;
     for (let i = 0; i < recommendations.length; i += chunkSize) {
         const chunk = recommendations.slice(i, i + chunkSize);
@@ -155,10 +146,7 @@ async function seed() {
             recommendations: chunk
         });
 
-        console.log(`Inserted chunk ${i / chunkSize + 1} / ${Math.ceil(recommendations.length / chunkSize)}`);
     }
-
-    console.log(`✅ Seed complete! ${recommendations.length} recommendations using ${existingUsers.length} existing users.`);
 }
 
-seed().catch(console.error);
+seed().catch(() => { });

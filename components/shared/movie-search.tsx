@@ -12,6 +12,7 @@ export type MovieResult = {
   release_date: string;
   poster_path: string | null;
   genre: string;
+  isManual?: boolean;
 };
 
 interface MovieSearchProps {
@@ -39,8 +40,8 @@ export function MovieSearch({ onSelect }: MovieSearchProps) {
       try {
         const results = await searchMovies(searchQuery);
         setSearchResults(results);
-      } catch (err) {
-        console.error(err);
+      } catch (_) {
+        // intentionally ignoring error
       } finally {
         setIsSearching(false);
         setHasSearched(true);
@@ -52,11 +53,12 @@ export function MovieSearch({ onSelect }: MovieSearchProps) {
 
   const handleManualAdd = () => {
     onSelect({
-      id: Date.now(),
+      id: 0,
       title: searchQuery,
       release_date: '',
       poster_path: null,
       genre: 'Other',
+      isManual: true,
     });
   };
 

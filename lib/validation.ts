@@ -13,7 +13,6 @@ export const ALLOWED_GENRES = [
     'History',
     'Music',
     'Mystery',
-    'Science Fiction',
     'TV Movie',
     'War',
     'Western',

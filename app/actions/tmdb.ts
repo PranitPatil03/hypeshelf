@@ -28,13 +28,16 @@ export async function searchMovies(query: string) {
     const apiKey = process.env.TMDB_API_KEY;
 
     if (!apiKey) {
-        console.error("No TMDB_API_KEY found in environment variables.");
         return [];
     }
 
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`, {
-            cache: 'no-store'
+        const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`, {
+            cache: 'no-store',
+            headers: {
+                Authorization: `Bearer ${apiKey}`,
+                accept: 'application/json'
+            }
         });
 
         if (!res.ok) {
@@ -43,7 +46,7 @@ export async function searchMovies(query: string) {
 
         const data = await res.json();
 
-        return data.results.slice(0, 5).map((movie: any) => ({
+        return data.results.slice(0, 5).map((movie: { id: number; title: string; release_date: string; poster_path: string | null; genre_ids: number[] }) => ({
             id: movie.id,
             title: movie.title,
             release_date: movie.release_date,
@@ -51,7 +54,6 @@ export async function searchMovies(query: string) {
             genre: movie.genre_ids && movie.genre_ids.length > 0 ? genreMap[movie.genre_ids[0]] || "Other" : "Other"
         }));
     } catch (e) {
-        console.error("Failed to fetch from TMDB:", e);
         return [];
     }
 }

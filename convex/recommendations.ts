@@ -6,7 +6,7 @@ import { isAdminEmail } from "./lib/admin";
 const ALLOWED_GENRES = [
     "Action", "Comedy", "Drama", "Sci-Fi", "Horror", "Thriller", "Romance", "Documentary",
     "Other", "Adventure", "Animation", "Crime", "Family", "Fantasy", "History",
-    "Music", "Mystery", "Science Fiction", "TV Movie", "War", "Western",
+    "Music", "Mystery", "TV Movie", "War", "Western",
 ];
 
 const MAX_TITLE_LENGTH = 200;
@@ -81,6 +81,15 @@ export const create = mutation({
         }
         const title = args.title.trim();
         const blurb = args.blurb.trim();
+
+        const recentCount = await ctx.db.query('recommendations')
+            .withIndex('by_userId', q => q.eq('userId', identity.subject))
+            .filter(q => q.gte(q.field('_creationTime'), Date.now() - 3600000))
+            .collect();
+
+        if (recentCount.length >= 20) {
+            throw new Error('Rate limit: max 20 recommendations per hour');
+        }
 
         if (!title || title.length > MAX_TITLE_LENGTH) {
             throw new Error(`Title must be between 1 and ${MAX_TITLE_LENGTH} characters`);

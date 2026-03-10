@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useSignUp } from '@clerk/nextjs';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'sonner';
@@ -39,9 +40,9 @@ export default function SignUpPage() {
 
             await signUp.prepareEmailAddressVerification({ strategy: 'email_code' });
             setPendingVerification(true);
-        } catch (err: any) {
-            console.error(err);
-            toast.error(err.errors?.[0]?.message || err.message || 'An error occurred during sign up');
+        } catch (err) {
+            const error = err as { errors?: Array<{ message: string }>; message?: string };
+            toast.error(error.errors?.[0]?.message || error.message || 'An error occurred during sign up');
         } finally {
             setIsLoading(false);
         }
@@ -59,13 +60,13 @@ export default function SignUpPage() {
 
             if (completeSignUp.status === 'complete') {
                 await setActive({ session: completeSignUp.createdSessionId });
-                window.location.href = '/shelf';
+                router.push('/shelf');
             } else {
                 toast.error('Verification failed. Please try again.');
             }
-        } catch (err: any) {
-            console.error(err);
-            toast.error(err.errors?.[0]?.message || err.message || 'Invalid verification code');
+        } catch (err) {
+            const error = err as { errors?: Array<{ message: string }>; message?: string };
+            toast.error(error.errors?.[0]?.message || error.message || 'Invalid verification code');
         } finally {
             setIsLoading(false);
         }
@@ -89,7 +90,7 @@ export default function SignUpPage() {
                             Verify your email
                         </h1>
                         <p className="text-slate-500 text-sm mb-8 leading-relaxed max-w-sm">
-                            We've sent a verification code to <span className="font-semibold text-slate-800">{emailAddress}</span>.
+                            We&apos;ve sent a verification code to <span className="font-semibold text-slate-800">{emailAddress}</span>.
                         </p>
                     </div>
 
@@ -126,7 +127,7 @@ export default function SignUpPage() {
                 <div className="flex flex-col items-center text-center">
                     {/* Logo */}
                     <Link href="/" className="inline-flex items-center gap-1.5 mb-2">
-                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
+                        <Image src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
 
@@ -197,7 +198,7 @@ export default function SignUpPage() {
                     </div>
 
                     <button
-                    
+
                         type="submit"
                         disabled={isLoading || !isLoaded}
                         className="flex items-center justify-center cursor-pointer w-full h-12 text-white font-medium rounded-xl transition-all duration-200 mt-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-b from-slate-700 to-slate-900 border border-slate-900 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_4px_10px_rgba(15,23,42,0.4)] hover:shadow-[inset_0_1px_1px_rgba(255,255,255,0.3),0_6px_15px_rgba(15,23,42,0.5)] hover:-translate-y-0.5 active:translate-y-0 active:shadow-[inset_0_1px_1px_rgba(255,255,255,0.2),0_2px_5px_rgba(15,23,42,0.4)]"

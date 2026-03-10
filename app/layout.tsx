@@ -2,6 +2,9 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { ConvexClientProvider } from "@/components/convex-client-provider";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,26 +37,25 @@ export const metadata: Metadata = {
   },
 };
 
-import { Toaster } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <ConvexClientProvider>
+    <ClerkProvider signInForceRedirectUrl="/shelf" signUpForceRedirectUrl="/shelf">
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <TooltipProvider>
-            {children}
-          </TooltipProvider>
-          <Toaster />
+          <ConvexClientProvider>
+            <TooltipProvider>
+              {children}
+            </TooltipProvider>
+            <Toaster />
+          </ConvexClientProvider>
         </body>
       </html>
-    </ConvexClientProvider>
+    </ClerkProvider>
   );
 }

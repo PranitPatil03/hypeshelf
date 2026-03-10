@@ -31,7 +31,7 @@ const HeroContent = () => (
             {...fadeInVariant}
             transition={getTransition(0.3)}
         >
-            Collect and share the movies you're hyped about.
+            Collect and share the movies you&apos;re hyped about.
             Drop your favorites and discover what others love.
         </motion.p>
         <motion.div

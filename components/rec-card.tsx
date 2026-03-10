@@ -8,7 +8,7 @@ import { RecAuthorBadge } from './shared/rec-author-badge';
 
 import { useMutation } from "convex/react";
 import { api } from "@/convex/_generated/api";
-import { Id } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -19,13 +19,14 @@ import { StarRatingInput } from '@/components/shared/star-rating-input';
 import { recommendationSchema } from '@/lib/validation';
 import { ALLOWED_GENRES } from '@/lib/validation';
 
-export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: any }) {
+export default function RecCard({ rec, currentUser }: { rec: Doc<"recommendations">, currentUser?: Doc<"users"> | null }) {
     const deleteRec = useMutation(api.recommendations.remove);
     const toggleStaffPick = useMutation(api.recommendations.toggleStaffPick);
     const updateRec = useMutation(api.recommendations.update);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
     const [editBlurb, setEditBlurb] = useState('');
     const [editStarRating, setEditStarRating] = useState(4);
@@ -41,17 +42,21 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
     const canEdit = isAuthor || isAdmin;
 
     const handleDelete = async () => {
+        setIsDeleting(true);
         try {
-            await deleteRec({ id: rec.id as Id<"recommendations"> });
+            await deleteRec({ id: rec._id });
+            toast.success('Recommendation deleted');
             setIsDeleteDialogOpen(false);
         } catch {
             toast.error("Failed to delete recommendation");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
     const handleToggleStaffPick = async () => {
         try {
-            await toggleStaffPick({ id: rec.id as Id<"recommendations"> });
+            await toggleStaffPick({ id: rec._id });
         } catch {
             toast.error("Failed to toggle staff pick");
         }
@@ -91,10 +96,11 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
         }
 
         try {
-            await updateRec({ id: rec.id as Id<"recommendations">, ...validation.data });
+            await updateRec({ id: rec._id, ...validation.data });
             setIsEditDialogOpen(false);
-        } catch (err: any) {
-            setEditError(err.message || 'Failed to update recommendation.');
+        } catch (err) {
+            const error = err as { message?: string };
+            setEditError(error.message || 'Failed to update recommendation.');
         } finally {
             setIsEditSubmitting(false);
         }
@@ -125,7 +131,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                 <div className="absolute top-3 right-3 z-20">
                     <Tooltip>
                         <TooltipTrigger asChild>
-                            <img src="/icons/badge.png" alt="Staff Pick" className="w-10 h-10 drop-shadow-lg cursor-pointer" />
+                            <Image src="/icons/badge.png" alt="Staff Pick" width={40} height={40} className="w-10 h-10 drop-shadow-lg cursor-pointer" />
                         </TooltipTrigger>
                         <TooltipContent side="left" className="text-xs font-semibold">
                             Staff Pick
@@ -162,7 +168,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                             }}
                                             className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                         >
-                                            <img src="/icons/badge.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
+                                            <Image src="/icons/badge.png" alt="" width={16} height={16} className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                             {rec.isStaffPick ? 'Unmark Pick' : 'Staff Pick'}
                                         </button>
                                     )}
@@ -174,7 +180,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                         }}
                                         className="w-full text-left px-4 py-2.5 text-sm font-semibold text-slate-700 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                     >
-                                        <img src="/icons/edit.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
+                                        <Image src="/icons/edit.png" alt="" width={16} height={16} className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                         Edit
                                     </button>
                                     <button
@@ -185,7 +191,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                                         }}
                                         className="w-full text-left px-4 py-2.5 text-sm font-semibold text-red-500 flex items-center gap-2.5 transition-all group/item cursor-pointer"
                                     >
-                                        <img src="/icons/delete.png" alt="" className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
+                                        <Image src="/icons/delete.png" alt="" width={16} height={16} className="w-4 h-4 transition-transform duration-200 group-hover/item:scale-125" />
                                         Delete
                                     </button>
                                 </div>
@@ -227,7 +233,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     </p>
                 </div>
 
-                <RecAuthorBadge authorName={rec.authorName} avatarUrl={rec.userAvatar} />
+                <RecAuthorBadge authorName={rec.userName || "Unknown"} avatarUrl={rec.userAvatar} />
             </div>
 
             <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
@@ -235,7 +241,7 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                     <DialogHeader>
                         <DialogTitle>Delete Recommendation</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete "{rec.title}"? This action cannot be undone.
+                            Are you sure you want to delete &quot;{rec.title}&quot;? This action cannot be undone.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter className="flex-row justify-end space-x-2 pt-4">
@@ -249,9 +255,10 @@ export default function RecCard({ rec, currentUser }: { rec: any, currentUser?: 
                         <Button
                             variant="destructive"
                             onClick={handleDelete}
+                            disabled={isDeleting}
                             className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white"
                         >
-                            Delete
+                            {isDeleting ? 'Deleting...' : 'Delete'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

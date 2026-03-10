@@ -1,5 +1,7 @@
 'use client';
 
+import Image from 'next/image';
+
 interface StarRatingInputProps {
   value: number;
   onChange: (value: number) => void;
@@ -15,12 +17,12 @@ export function StarRatingInput({ value, onChange }: StarRatingInputProps) {
           const isHalf = !isFull && star - 0.5 === value;
           return (
             <div key={star} className="relative w-7 h-7 transition-transform hover:scale-110 active:scale-95">
-              <img src="/icons/star.png" alt="" className="absolute inset-0 w-7 h-7 opacity-20" />
+              <Image src="/icons/star.png" alt="" width={28} height={28} className="absolute inset-0 w-7 h-7 opacity-20" />
               {isFull && (
-                <img src="/icons/star.png" alt="" className="absolute inset-0 w-7 h-7" />
+                <Image src="/icons/star.png" alt="" width={28} height={28} className="absolute inset-0 w-7 h-7" />
               )}
               {isHalf && (
-                <img src="/icons/star-half.png" alt="" className="absolute inset-y-0 left-0 w-3.5 h-7" />
+                <Image src="/icons/star-half.png" alt="" width={14} height={28} className="absolute inset-y-0 left-0 w-3.5 h-7" />
               )}
               <div className="absolute inset-0 flex z-10">
                 <div className="w-1/2 h-full" onClick={() => onChange(star - 0.5)} />

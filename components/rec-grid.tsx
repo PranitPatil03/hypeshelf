@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useQuery, usePaginatedQuery } from "convex/react";
 import { api } from "@/convex/_generated/api";
+import { Doc } from "@/convex/_generated/dataModel";
 import RecCard from "@/components/rec-card";
 import { Loader } from "lucide-react";
 
@@ -76,14 +77,19 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
         );
     }
 
-    let displayRecs = recsQuery;
+    const displayRecs = recsQuery;
 
     if (displayRecs.length === 0) {
+        const emptyMessage = isMyRecs ? "You have no recs yet"
+            : isStaffPicks ? "No staff picks yet"
+                : (activeGenre !== 'All') ? `No ${activeGenre} recs yet`
+                    : "The shelf is empty";
+
         return (
             <div className={`flex flex-col gap-6 w-full ${mode === 'shelf' ? 'flex-1 overflow-hidden' : ''}`}>
                 <div className={`col-span-full py-20 flex flex-col items-center justify-center text-center bg-slate-50/50 rounded-[32px] border border-slate-200 border-dashed w-full ${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar max-w-7xl mx-auto' : ''}`}>
                     <span className="text-slate-400 mb-3 text-3xl">🍿</span>
-                    <h3 className="text-base font-bold text-slate-800 tracking-tight">Your shelf is empty</h3>
+                    <h3 className="text-base font-bold text-slate-800 tracking-tight">{emptyMessage}</h3>
                     <p className="text-sm font-medium text-slate-500 mt-1">Start recommending some certified bangers.</p>
                 </div>
             </div>
@@ -95,18 +101,11 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
 
             <div className={`${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar pb-24' : 'pb-24 w-full'}`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 w-full">
-                    {displayRecs.map((rec) => {
-                        const formattedRec: any = {
-                            ...rec,
-                            id: rec._id,
-                            createdAt: new Date(rec._creationTime).toISOString(),
-                            authorName: rec.userName || "Unknown",
-                        };
-
+                    {displayRecs.map((rec: Doc<"recommendations">) => {
                         return (
                             <RecCard
                                 key={rec._id}
-                                rec={formattedRec}
+                                rec={rec}
                                 currentUser={currentUser}
                             />
                         );

@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import { cn } from '@/lib/utils';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
@@ -44,13 +45,13 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
                         transition={{ duration: 0.5, ease: [0.32, 0.72, 0, 1], delay: 0.1 }}
                     >
                         <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-1.5">
-                            <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
+                            <Image src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                             <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                         </Link>
                     </motion.div>
                 ) : (
                     <Link href="/" aria-label="hypeshelf Home" className="flex items-center gap-1.5">
-                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
+                        <Image src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </Link>
                 )}
@@ -135,7 +136,7 @@ export default function Header({ transparentOnTop = false }: { transparentOnTop?
             >
                 <div className="flex items-center justify-between px-5 py-5 border-b border-slate-100">
                     <div className="flex items-center gap-1.5">
-                        <img src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
+                        <Image src="/icons/sunflower.png" alt="hypeshelf" width={36} height={36} />
                         <span className="text-2xl font-lora text-slate-900 tracking-tight drop-shadow-sm">hypeshelf</span>
                     </div>
                     <button

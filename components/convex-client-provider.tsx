@@ -1,20 +1,30 @@
 "use client";
 
-import { ClerkProvider, useAuth } from "@clerk/nextjs";
+import { useAuth } from "@clerk/nextjs";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient, useMutation, useConvexAuth } from "convex/react";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import { api } from "@/convex/_generated/api";
-
-const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
 function ConvexSyncUser({ children }: { children: ReactNode }) {
     const { isAuthenticated } = useConvexAuth();
     const storeUser = useMutation(api.users.store);
+    const hasStoredUser = useRef(false);
+    const isStoringUser = useRef(false);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            storeUser().catch(console.error);
+        if (isAuthenticated && !hasStoredUser.current && !isStoringUser.current) {
+            isStoringUser.current = true;
+            storeUser()
+                .then(() => {
+                    hasStoredUser.current = true;
+                })
+                .catch(() => {
+                    // Ignored intentionally
+                })
+                .finally(() => {
+                    isStoringUser.current = false;
+                });
         }
     }, [isAuthenticated, storeUser]);
 
@@ -22,13 +32,17 @@ function ConvexSyncUser({ children }: { children: ReactNode }) {
 }
 
 export function ConvexClientProvider({ children }: { children: ReactNode }) {
+    const [convex] = useState(() => {
+        const url = process.env.NEXT_PUBLIC_CONVEX_URL;
+        if (!url) throw new Error("Missing NEXT_PUBLIC_CONVEX_URL");
+        return new ConvexReactClient(url);
+    });
+
     return (
-        <ClerkProvider signInForceRedirectUrl="/shelf" signUpForceRedirectUrl="/shelf">
-            <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-                <ConvexSyncUser>
-                    {children}
-                </ConvexSyncUser>
-            </ConvexProviderWithClerk>
-        </ClerkProvider>
+        <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+            <ConvexSyncUser>
+                {children}
+            </ConvexSyncUser>
+        </ConvexProviderWithClerk>
     );
 }
