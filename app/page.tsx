@@ -22,9 +22,11 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ g
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <Image
             src="/images/bg-banners/bg-image-white.png"
-            alt="Page Background"
+            alt=""
             fill
             priority
+            quality={100}
+            sizes="100vw"
             className="object-cover object-center"
           />
         </div>

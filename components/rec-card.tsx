@@ -19,7 +19,7 @@ import { StarRatingInput } from '@/components/shared/star-rating-input';
 import { recommendationSchema } from '@/lib/validation';
 import { ALLOWED_GENRES } from '@/lib/validation';
 
-export default function RecCard({ rec, currentUser }: { rec: Doc<"recommendations">, currentUser?: Doc<"users"> | null }) {
+export default function RecCard({ rec, currentUser, priority = false }: { rec: Doc<"recommendations">, currentUser?: Doc<"users"> | null, priority?: boolean }) {
     const deleteRec = useMutation(api.recommendations.remove);
     const toggleStaffPick = useMutation(api.recommendations.toggleStaffPick);
     const updateRec = useMutation(api.recommendations.update);
@@ -115,7 +115,9 @@ export default function RecCard({ rec, currentUser }: { rec: Doc<"recommendation
                         alt={rec.title}
                         fill
                         className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
-                        unoptimized
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        quality={100}
+                        priority={priority}
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                 ) : (

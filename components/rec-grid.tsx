@@ -21,7 +21,7 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
             myRecs: isMyRecs ? true : undefined,
             staffPicks: isStaffPicks ? true : undefined,
         },
-        { initialNumItems: 50 }
+        { initialNumItems: 12 }
     );
 
     const currentUser = useQuery(api.users.current);
@@ -32,7 +32,7 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting && status === "CanLoadMore") {
-                    loadMore(25);
+                    loadMore(12);
                 }
             },
             { threshold: 0.1 }
@@ -101,12 +101,13 @@ export default function RecGrid({ genre, mode }: { genre?: string, mode: 'landin
 
             <div className={`${mode === 'shelf' ? 'flex-1 overflow-y-auto no-scrollbar pb-24' : 'pb-24 w-full'}`}>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 w-full">
-                    {displayRecs.map((rec: Doc<"recommendations">) => {
+                    {displayRecs.map((rec: Doc<"recommendations">, index: number) => {
                         return (
                             <RecCard
                                 key={rec._id}
                                 rec={rec}
                                 currentUser={currentUser}
+                                priority={index < 4}
                             />
                         );
                     })}

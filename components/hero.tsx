@@ -6,8 +6,8 @@ import Link from 'next/link';
 const EASE_OUT: [number, number, number, number] = [0.32, 0.72, 0, 1];
 
 const fadeInVariant: MotionProps = {
-    initial: { opacity: 0, filter: 'blur(6px)' },
-    animate: { opacity: 1, filter: 'blur(0px)' },
+    initial: { opacity: 0, y: 8 },
+    animate: { opacity: 1, y: 0 },
 };
 
 const getTransition = (delay: number) => ({
