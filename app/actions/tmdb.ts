@@ -32,10 +32,9 @@ export async function searchMovies(query: string) {
     }
 
     try {
-        const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&language=en-US&page=1&include_adult=false`, {
+        const res = await fetch(`https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&api_key=${apiKey}&language=en-US&page=1&include_adult=false`, {
             cache: 'no-store',
             headers: {
-                Authorization: `Bearer ${apiKey}`,
                 accept: 'application/json'
             }
         });
