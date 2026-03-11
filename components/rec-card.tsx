@@ -117,7 +117,8 @@ export default function RecCard({ rec, currentUser, priority = false }: { rec: D
                         className="object-cover object-top transition-transform duration-700 ease-out group-hover:scale-105"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         quality={100}
-                        priority={priority}
+                        priority={true}
+                        unoptimized={true}
                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
                     />
                 ) : (
